@@ -1,4 +1,4 @@
-package ru.gitsource.ui.theme
+package ru.example.gitsource.theme
 
 import androidx.compose.ui.graphics.Color
 

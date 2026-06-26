@@ -1,4 +1,4 @@
-package ru.gitsource.di
+package ru.example.gitsource.di
 
 import dagger.Module
 import dagger.hilt.InstallIn

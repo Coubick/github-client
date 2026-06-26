@@ -1,4 +1,4 @@
-package ru.gitsource
+package ru.example.gitsource
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,7 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dagger.hilt.android.AndroidEntryPoint
-import ru.gitsource.ui.theme.GitSourceTheme
+import ru.example.gitsource.theme.GitSourceTheme
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

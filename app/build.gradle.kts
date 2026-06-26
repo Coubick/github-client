@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "ru.gitsource"
+    namespace = "ru.example.gitsource"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "ru.gitsource"
+        applicationId = "ru.example.gitsource"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
