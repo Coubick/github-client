@@ -1,4 +1,4 @@
-package ru.example.gitsource.ui.theme
+package ru.example.gitsource.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

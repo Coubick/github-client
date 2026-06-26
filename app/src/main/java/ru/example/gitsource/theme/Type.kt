@@ -1,4 +1,4 @@
-package ru.example.gitsource.ui.theme
+package ru.example.gitsource.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
