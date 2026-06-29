@@ -12,7 +12,6 @@ internal interface GitHubOAuthService {
 
     @POST("login/oauth/access_token")
     @FormUrlEncoded
-    @Headers("Accept: application/json")
     suspend fun getAccessToken(
         @Field("client_id") clientId: String,
         @Field("device_code") deviceCode: String,

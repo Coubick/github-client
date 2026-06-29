@@ -10,6 +10,7 @@ import ru.example.gitsource.data.api.GitHubOAuthService
 import ru.example.gitsource.data.common.NetworkConstants.BASE_URL
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
+import ru.example.gitsource.network.JsonAcceptInterceptor
 import java.util.concurrent.TimeUnit
 
 @Module
@@ -19,17 +20,20 @@ internal object AppModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(JsonAcceptInterceptor())
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
+
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
