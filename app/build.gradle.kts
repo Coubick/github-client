@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.google.gson)
+    implementation(libs.datastore)
+    implementation(libs.datastore.preferences)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.compose.ui.tooling)

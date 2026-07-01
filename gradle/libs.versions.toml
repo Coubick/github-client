@@ -10,6 +10,7 @@ hilt = "2.59"
 ksp = "2.2.20-2.0.2"
 retrofit = "2.11.0"
 gson = "2.11.0"
+datastore = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,6 +29,8 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", v
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

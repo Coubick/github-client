@@ -1,4 +1,4 @@
-package ru.example.gitsource.data.common
+package ru.example.gitsource.common
 
 internal object NetworkConstants {
     const val BASE_URL = "https://github.com/"
