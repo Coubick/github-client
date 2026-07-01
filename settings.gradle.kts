@@ -24,4 +24,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "Git Source"
 include(":app")
- 

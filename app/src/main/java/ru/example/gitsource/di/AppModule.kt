@@ -1,9 +1,12 @@
 package ru.example.gitsource.di
 
 import android.content.Context
+import android.provider.SyncStateContract
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +23,6 @@ import ru.example.gitsource.data.local.LocalDataStore
 import ru.example.gitsource.data.network.JsonAcceptInterceptor
 import java.util.concurrent.TimeUnit
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCES_NAME)
 @Module
 @InstallIn(SingletonComponent::class)
 internal object AppModule {
@@ -53,12 +55,14 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context: Context) : DataStore<Preferences> {
-        return context.dataStore
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            produceFile = { context.preferencesDataStoreFile(PREFERENCES_NAME) }
+        )
     }
 
-    @Provides
     @Singleton
+    @Provides
     fun provideLocalDataStore(dataStore: DataStore<Preferences>): LocalDataStore {
         return LocalDataStore(dataStore)
     }
