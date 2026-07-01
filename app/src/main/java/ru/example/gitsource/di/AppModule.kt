@@ -12,15 +12,15 @@ import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.example.gitsource.data.api.GitHubOAuthService
-import ru.example.gitsource.common.NetworkConstants.BASE_URL
+import ru.example.gitsource.data.common.NetworkConstants.BASE_URL
 import javax.inject.Singleton
 import okhttp3.OkHttpClient
-import ru.example.gitsource.common.DataConstants.SOURCE_FILE_NAME
+import ru.example.gitsource.data.common.DataConstants.PREFERENCES_NAME
 import ru.example.gitsource.data.local.LocalDataStore
-import ru.example.gitsource.network.JsonAcceptInterceptor
+import ru.example.gitsource.data.network.JsonAcceptInterceptor
 import java.util.concurrent.TimeUnit
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(SOURCE_FILE_NAME)
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCES_NAME)
 @Module
 @InstallIn(SingletonComponent::class)
 internal object AppModule {

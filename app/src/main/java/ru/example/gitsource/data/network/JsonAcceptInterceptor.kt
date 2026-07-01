@@ -1,9 +1,9 @@
-package ru.example.gitsource.network
+package ru.example.gitsource.data.network
 
 import okhttp3.Interceptor
 import okhttp3.Response
 
-class JsonAcceptInterceptor : Interceptor {
+internal class JsonAcceptInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response? {
         val originalRequest = chain.request()
         val newRequest = originalRequest.newBuilder()

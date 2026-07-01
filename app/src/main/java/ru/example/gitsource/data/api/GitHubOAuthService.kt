@@ -4,7 +4,7 @@ import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import ru.example.gitsource.common.NetworkConstants.GRANT_TYPE_DEVICE_CODE
+import ru.example.gitsource.data.common.NetworkConstants.GRANT_TYPE_DEVICE_CODE
 import ru.example.gitsource.data.dto.AccessTokenResponse
 
 internal interface GitHubOAuthService {
