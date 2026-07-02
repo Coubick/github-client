@@ -1,4 +1,4 @@
-package ru.example.gitsource.data.common
+package ru.example.gitsource.data.network
 
 import retrofit2.Response
 

@@ -1,4 +1,4 @@
-package ru.example.gitsource.data.common
+package ru.example.gitsource.data.network
 
 import ru.example.gitsource.data.common.NetworkConstants.BAD_REQUEST
 import ru.example.gitsource.data.common.NetworkConstants.NOT_FOUND
