@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Git Source</string>
+    <string name="title">Git Source</string>
+    <string name="login">Войти</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="popular_repo_screen">Тут будет список популярных репозиториев</string>
+    <string name="back_button">Назад</string>
 </resources>

@@ -1,27 +1,25 @@
 package ru.example.gitsource.di
 
 import android.content.Context
-import android.provider.SyncStateContract
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.example.gitsource.data.api.GitHubOAuthService
-import ru.example.gitsource.data.common.NetworkConstants.BASE_URL
-import javax.inject.Singleton
-import okhttp3.OkHttpClient
 import ru.example.gitsource.data.common.DataConstants.PREFERENCES_NAME
+import ru.example.gitsource.data.common.NetworkConstants.BASE_URL
 import ru.example.gitsource.data.local.LocalDataStore
 import ru.example.gitsource.data.network.JsonAcceptInterceptor
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
