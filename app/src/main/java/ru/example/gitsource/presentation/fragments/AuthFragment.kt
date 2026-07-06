@@ -9,9 +9,9 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
-import ru.example.gitsource.R
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
+import ru.example.gitsource.presentation.screens.Screen
 import ru.example.gitsource.presentation.screens.AuthScreen
 import javax.inject.Inject
 
@@ -33,7 +33,8 @@ internal class AuthFragment : Fragment() {
                 MaterialTheme {
                     AuthScreen(
                         onLoginClick = {
-                            val command = Command.NavigateToCommand(R.id.popularRepositoriesFragment)
+                            val popularRepoScreen = Screen.PopularRepositoriesScreen
+                            val command = Command.NavigateToCommand(popularRepoScreen)
                             navigator.execute(command)
                         }
                     )

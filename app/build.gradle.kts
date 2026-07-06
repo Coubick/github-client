@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.google.gson)
     implementation(libs.datastore)
     implementation(libs.datastore.preferences)
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

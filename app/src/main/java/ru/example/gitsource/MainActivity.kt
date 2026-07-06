@@ -17,12 +17,17 @@ internal class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initNavigator()
+    }
+
+    private fun initNavigator() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
         navigator.setNavController(navController)
-        navigator.setNavController(navController)
-        navigator.setonBackPressedDispatcher(onBackPressedDispatcher)
+        navigator.setOnBackPressedDispatcher(onBackPressedDispatcher)
+        navigator.setActivity(this)
+        navigator.setupBackPressedHandler()
     }
 }

@@ -12,9 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ru.example.gitsource.R
+import ru.example.gitsource.presentation.screens.default_sizes.SpaceDefaults
+import ru.example.gitsource.presentation.screens.default_sizes.TextFieldDefaults
+
 
 @Composable
 fun AuthScreen(onLoginClick: () -> Unit) {
@@ -25,11 +26,11 @@ fun AuthScreen(onLoginClick: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.title),
-            fontSize = 52.sp
+            fontSize = TextFieldDefaults.LargeFontSize
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(SpaceDefaults.SpaceSize))
         Button(onClick = onLoginClick) {
-            Text("Войти")
+            Text(stringResource(R.string.login))
         }
     }
 }
