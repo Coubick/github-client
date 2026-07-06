@@ -1,13 +1,18 @@
 package ru.example.gitsource
 
 import android.os.Bundle
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
+import ru.example.gitsource.navigation.Navigator
+import javax.inject.Inject
 
 @AndroidEntryPoint
 internal class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var navigator: Navigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -16,12 +21,8 @@ internal class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
-        onBackPressedDispatcher.addCallback(this) {
-            if (navController.currentDestination?.id == R.id.authFragment) {
-                finish()
-            } else {
-                navController.popBackStack()
-            }
-        }
+        navigator.setNavController(navController)
+        navigator.setNavController(navController)
+        navigator.setonBackPressedDispatcher(onBackPressedDispatcher)
     }
 }

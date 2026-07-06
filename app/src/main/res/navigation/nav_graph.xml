@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/authFragment"
-        android:name="ru.example.gitsource.presentation.AuthFragment"
+        android:name="ru.example.gitsource.presentation.fragments.AuthFragment"
         android:label="AuthFragment" />
 
     <fragment
         android:id="@+id/popularRepositoriesFragment"
-        android:name="ru.example.gitsource.presentation.PopularRepositoriesFragment"
+        android:name="ru.example.gitsource.presentation.fragments.PopularRepositoriesFragment"
         android:label="PopularRepositoriesFragment" />
 
 </navigation>

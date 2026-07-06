@@ -1,5 +1,6 @@
 package ru.example.gitsource.navigation
 
-internal interface Command {
-    fun execute()
+internal sealed interface Command {
+    data object BackCommand : Command
+    data class NavigateToCommand(val navigateTo: Int) : Command
 }
