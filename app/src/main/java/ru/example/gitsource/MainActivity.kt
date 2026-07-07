@@ -1,49 +1,33 @@
 package ru.example.gitsource
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
-import ru.example.gitsource.theme.GitSourceTheme
+import ru.example.gitsource.navigation.Navigator
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+internal class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var navigator: Navigator
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            GitSourceTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
-        }
+        setContentView(R.layout.activity_main)
+
+        initNavigator()
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun initNavigator() {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    GitSourceTheme {
-        Greeting("Android")
+        navigator.setNavController(navController)
+        navigator.setOnBackPressedDispatcher(onBackPressedDispatcher)
+        navigator.setActivity(this)
+        navigator.setupBackPressedHandler()
     }
 }
