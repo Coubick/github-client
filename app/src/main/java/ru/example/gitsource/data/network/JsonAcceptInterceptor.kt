@@ -7,23 +7,20 @@ internal class JsonAcceptInterceptor : Interceptor {
     private companion object {
         const val HEADER_NAME = "Accept"
         const val OAUTH_HEADER_VALUE = "application/json"
-        const val API_HOST = "api.github.com"
-        const val API_HEADER_VALUE = "application/vnd.github.v3+json"
     }
 
     override fun intercept(chain: Interceptor.Chain): Response? {
         val originalRequest = chain.request()
+        val header = originalRequest.headers().get("HEADER_NAME")
 
-        val headerValue = if (originalRequest.url().host() == API_HOST) {
-            API_HEADER_VALUE
+        if (header == null){
+            val newRequest = originalRequest.newBuilder()
+                .header(HEADER_NAME, OAUTH_HEADER_VALUE)
+                .build()
+
+            return chain.proceed(newRequest)
         } else {
-            OAUTH_HEADER_VALUE
+            return chain.proceed(originalRequest)
         }
-
-        val newRequest = originalRequest.newBuilder()
-            .header(HEADER_NAME, headerValue)
-            .build()
-
-        return chain.proceed(newRequest)
     }
 }

@@ -21,6 +21,8 @@ import ru.example.gitsource.data.local.LocalDataStore
 import ru.example.gitsource.data.network.JsonAcceptInterceptor
 import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
+import ru.example.gitsource.data.network.api.GitHubApi
+import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.domain.AuthRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -28,6 +30,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object AppModule {
+
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -55,8 +58,20 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideNetworkClient(retrofit: Retrofit): NetworkClient {
-        return NetworkClient(retrofit)
+    fun provideNetworkClient(): NetworkClient {
+        return NetworkClient()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubApi(retrofit: Retrofit): GitHubApi{
+        return retrofit.create(GitHubApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubOAuthApi(retrofit: Retrofit): GitHubOAuthApi {
+        return retrofit.create(GitHubOAuthApi::class.java)
     }
 
     @Provides
@@ -76,10 +91,16 @@ internal object AppModule {
     @Provides
     @Singleton
     fun provideAuthRepository(
+        gitHubOAuthApi: GitHubOAuthApi,
+        gitHubApi: GitHubApi,
         networkClient: NetworkClient,
         tokenManager: TokenManager
     ): AuthRepository {
-        return AuthRepositoryImpl(networkClient, tokenManager)
+        return AuthRepositoryImpl(
+            gitHubOAuthApi = gitHubOAuthApi,
+            gitHubApi = gitHubApi,
+            networkClient = networkClient,
+            tokenManager = tokenManager)
     }
 
     @Provides

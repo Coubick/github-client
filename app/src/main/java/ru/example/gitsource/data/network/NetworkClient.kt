@@ -9,17 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class NetworkClient @Inject constructor(
-    retrofit: Retrofit
-) {
-    private val oauthService: GitHubOAuthApi by lazy {
-        retrofit.create(GitHubOAuthApi::class.java)
-    }
-
-    private val gitHubApiService: GitHubApi by lazy {
-        retrofit.create(GitHubApi::class.java)
-    }
-
+internal class NetworkClient @Inject constructor() {
     suspend fun <T> execute(call: suspend () -> Response<T>): Result<T> {
         return try {
             val response = call()
@@ -29,28 +19,12 @@ internal class NetworkClient @Inject constructor(
             }
 
             val body = response.body()
-                ?: return Result.failure(NetworkError.EmptyResponseBody())
+                ?: return Result.failure(NetworkError.EmptyResponseBody)
 
             Result.success(body)
 
         } catch (e: Exception) {
-            Result.failure(NetworkError.Unknown(e.toString()))
+            Result.failure(NetworkError.Unknown)
         }
     }
-
-    suspend fun getAccessToken(
-        clientId: String,
-        clientSecret: String,
-        code: String
-    ): Result<AccessTokenResponse> {
-        return execute {
-            oauthService.getAccessToken(
-                clientId = clientId,
-                clientSecret = clientSecret,
-                code = code
-            )
-        }
-    }
-
-    // TODO методы для API (будут реализовываться начиная с https://jira.rutube.ru/browse/MOBAPP-18310)
 }

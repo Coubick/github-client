@@ -2,31 +2,34 @@ package ru.example.gitsource.data.auth
 
 import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkError
+import ru.example.gitsource.data.network.api.GitHubApi
+import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.domain.AuthRepository
 import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
+    private val gitHubOAuthApi: GitHubOAuthApi,
+    private val gitHubApi: GitHubApi,
     private val networkClient: NetworkClient,
     private val tokenManager: TokenManager
 ) : AuthRepository {
-
-    private companion object {
-        const val TOKEN_IS_NULL = "Токен не получен"
-    }
 
     override suspend fun login(
         clientId: String,
         clientSecret: String,
         code: String
     ): Result<Unit> {
-        return networkClient.getAccessToken(
-            clientId = clientId,
-            clientSecret = clientSecret,
-            code = code).fold(
+        return networkClient.execute {
+            gitHubOAuthApi.getAccessToken(
+                clientId = clientId,
+                clientSecret = clientSecret,
+                code = code
+            )
+        }.fold(
             onSuccess = { responseResult ->
                 val token = responseResult.accessToken
                 if (token.isEmpty()) {
-                    Result.failure(NetworkError.Unknown(TOKEN_IS_NULL))
+                    Result.failure(NetworkError.Unknown)
                 } else {
                     tokenManager.saveToken(token)
                     Result.success(Unit)
