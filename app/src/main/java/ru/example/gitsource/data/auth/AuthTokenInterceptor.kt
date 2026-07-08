@@ -21,14 +21,14 @@ internal class AuthTokenInterceptor @Inject constructor(private val tokenManager
             tokenManager.getToken()
         }
 
-        val newRequest = originalRequest.newBuilder().apply {
-            if (!token.isNullOrEmpty() && originalRequest.url().host() != OAUTH_HOST) {
-                addHeader(HEADER_NAME, "$HEADER_VALUE $token")
-            } else throw NetworkError.Unauthorized()
-        }.build()
+        if (!token.isNullOrEmpty() && originalRequest.url().host() != OAUTH_HOST) {
+            val newRequest = originalRequest.newBuilder()
+                .addHeader(HEADER_NAME, "$HEADER_VALUE $token")
+                .build()
+            return chain.proceed(newRequest)
 
-        return chain.proceed(newRequest)
-
-
+        } else {
+            throw NetworkError.Unauthorized()
+        }
     }
 }
