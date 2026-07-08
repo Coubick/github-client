@@ -4,8 +4,8 @@ import ru.example.gitsource.data.local.LocalDataStore
 import javax.inject.Inject
 
 internal class TokenManager @Inject constructor(private val localDataStore: LocalDataStore) {
-    companion object {
-        private const val KEY_ACCESS_TOKEN = "access_token"
+    private companion object {
+        const val KEY_ACCESS_TOKEN = "access_token"
     }
 
     suspend fun saveToken(token: String){

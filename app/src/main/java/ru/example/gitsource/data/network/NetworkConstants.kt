@@ -1,9 +1,8 @@
-package ru.example.gitsource.data.common
+package ru.example.gitsource.data.network
 
 internal object NetworkConstants {
-    const val BASE_URL = "https://github.com/"
+    const val OAUTH_URL = "https://github.com/login/oauth/access_token"
     const val BASE_API_URL = "https://api.github.com/"
-    const val BASE_API_HOST = "api.github.com"
     const val UNAUTHORIZED = "Не авторизован"
     const val NOT_FOUND = "Ресурс не найден"
     const val SERVER_ERROR = "Ошибка сервера"

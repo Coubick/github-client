@@ -1,4 +1,4 @@
-package ru.example.gitsource.data.api
+package ru.example.gitsource.domain
 
 internal interface AuthRepository {
     suspend fun login(clientId: String, clientSecret: String, code: String) : Result<Unit>

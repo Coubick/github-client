@@ -8,18 +8,27 @@ import javax.inject.Inject
 
 internal class AuthTokenInterceptor @Inject constructor(private val tokenManager: TokenManager) :
     Interceptor {
+    private companion object {
+        const val HEADER_NAME = "Authorization"
+        const val HEADER_VALUE = "Bearer"
+
+        const val OAUTH_HOST = "github.com"
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val token = runBlocking {
             tokenManager.getToken()
         }
 
-        if (!token.isNullOrEmpty()) {
-            val newRequest = originalRequest.newBuilder()
-                .addHeader("Authorization", "Bearer $token")
-                .build()
-            return chain.proceed(newRequest)
+        val newRequest = originalRequest.newBuilder().apply {
+            if (!token.isNullOrEmpty() && originalRequest.url().host() != OAUTH_HOST) {
+                addHeader(HEADER_NAME, "$HEADER_VALUE $token")
+            } else throw NetworkError.Unauthorized()
+        }.build()
 
-        } else throw NetworkError.Unauthorized()
+        return chain.proceed(newRequest)
+
+
     }
 }
