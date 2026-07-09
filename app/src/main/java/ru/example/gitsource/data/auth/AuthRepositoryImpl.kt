@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 internal class AuthRepositoryImpl @Inject constructor(
     private val gitHubOAuthApi: GitHubOAuthApi,
-    private val gitHubApi: GitHubApi,
     private val networkClient: NetworkClient,
     private val tokenManager: TokenManager
 ) : AuthRepository {
