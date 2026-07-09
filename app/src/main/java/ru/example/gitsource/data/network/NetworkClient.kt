@@ -2,14 +2,13 @@ package ru.example.gitsource.data.network
 
 import retrofit2.Response
 import retrofit2.Retrofit
-import ru.example.gitsource.data.dto.AccessTokenResponse
-import ru.example.gitsource.data.network.api.GitHubApi
-import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal class NetworkClient @Inject constructor() {
+internal class NetworkClient @Inject constructor(
+    private val retrofit: Retrofit
+) {
     suspend fun <T> execute(call: suspend () -> Response<T>): Result<T> {
         return try {
             val response = call()
@@ -26,5 +25,9 @@ internal class NetworkClient @Inject constructor() {
         } catch (e: Exception) {
             Result.failure(NetworkError.Unknown)
         }
+    }
+
+    fun <T> create(service: Class<T>): T {
+        return retrofit.create(service)
     }
 }

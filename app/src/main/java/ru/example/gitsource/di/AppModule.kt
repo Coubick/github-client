@@ -58,20 +58,20 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideNetworkClient(): NetworkClient {
-        return NetworkClient()
+    fun provideNetworkClient(retrofit: Retrofit): NetworkClient {
+        return NetworkClient(retrofit)
     }
 
     @Provides
     @Singleton
-    fun provideGitHubApi(retrofit: Retrofit): GitHubApi{
-        return retrofit.create(GitHubApi::class.java)
+    fun provideGitHubOAuthService(networkClient: NetworkClient): GitHubOAuthApi {
+        return networkClient.create(GitHubOAuthApi::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideGitHubOAuthApi(retrofit: Retrofit): GitHubOAuthApi {
-        return retrofit.create(GitHubOAuthApi::class.java)
+    fun provideGitHubApi(networkClient: NetworkClient): GitHubApi {
+        return networkClient.create(GitHubApi::class.java)
     }
 
     @Provides
@@ -92,15 +92,14 @@ internal object AppModule {
     @Singleton
     fun provideAuthRepository(
         gitHubOAuthApi: GitHubOAuthApi,
-        gitHubApi: GitHubApi,
         networkClient: NetworkClient,
         tokenManager: TokenManager
     ): AuthRepository {
         return AuthRepositoryImpl(
             gitHubOAuthApi = gitHubOAuthApi,
-            gitHubApi = gitHubApi,
             networkClient = networkClient,
-            tokenManager = tokenManager)
+            tokenManager = tokenManager
+        )
     }
 
     @Provides
