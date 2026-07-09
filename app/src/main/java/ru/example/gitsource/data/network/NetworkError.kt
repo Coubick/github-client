@@ -1,14 +1,14 @@
 package ru.example.gitsource.data.network
 
-import ru.example.gitsource.data.common.NetworkConstants.BAD_REQUEST
-import ru.example.gitsource.data.common.NetworkConstants.NOT_FOUND
-import ru.example.gitsource.data.common.NetworkConstants.SERVER_ERROR
-import ru.example.gitsource.data.common.NetworkConstants.UNAUTHORIZED
+sealed class NetworkError : Exception() {
 
-internal sealed class NetworkError(message: String) : NetworkErrorHandler(message) {
-    class Unauthorized(message: String = UNAUTHORIZED) : NetworkError(message)
-    class NotFound(message: String = NOT_FOUND) : NetworkError(message)
-    class ServerError(message: String = SERVER_ERROR) : NetworkError(message)
-    class BadRequest(message: String = BAD_REQUEST) : NetworkError(message)
-    data class Unknown(override val message: String) : NetworkError(message)
+    data class HttpError(val code: Int, override val message: String?) : NetworkError()
+    data class OAuthError(val error: String, val description: String?) : NetworkError()
+    data class NetworkException(override val cause: Throwable) : NetworkError()
+    data object EmptyResponseBody : NetworkError()
+    data object Unauthorized : NetworkError()
+    data object NotFound : NetworkError()
+    data object BadRequest : NetworkError()
+    data object ServerError : NetworkError()
+    data object Unknown : NetworkError()
 }

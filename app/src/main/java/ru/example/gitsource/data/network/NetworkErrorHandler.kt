@@ -8,11 +8,11 @@ internal sealed class NetworkErrorHandler(message: String) : Exception(message) 
             if (response.isSuccessful) return null
 
             return when (response.code()) {
-                400 -> NetworkError.BadRequest()
-                401 -> NetworkError.Unauthorized()
-                404 -> NetworkError.NotFound()
-                in 500..599 -> NetworkError.ServerError()
-                else -> NetworkError.Unknown("${response.code()}")
+                400 -> NetworkError.BadRequest
+                401 -> NetworkError.Unauthorized
+                404 -> NetworkError.NotFound
+                in 500..599 -> NetworkError.ServerError
+                else -> NetworkError.Unknown
             }
         }
     }

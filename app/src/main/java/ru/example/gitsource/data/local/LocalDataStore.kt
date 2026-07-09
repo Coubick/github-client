@@ -51,4 +51,11 @@ internal class LocalDataStore @Inject constructor(
             .map { preferences -> preferences[intPreferencesKey(key)] }
             .firstOrNull()
     }
+
+    suspend fun removeStringKey(key: String){
+        dataStore.edit {
+            mutablePreferences ->
+            mutablePreferences.remove(stringPreferencesKey(key))
+        }
+    }
 }

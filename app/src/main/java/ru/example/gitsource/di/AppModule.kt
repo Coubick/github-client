@@ -13,22 +13,33 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.example.gitsource.data.api.GitHubOAuthService
-import ru.example.gitsource.data.common.DataConstants.PREFERENCES_NAME
-import ru.example.gitsource.data.common.NetworkConstants.BASE_URL
+import ru.example.gitsource.data.auth.AuthRepositoryImpl
+import ru.example.gitsource.data.auth.AuthTokenInterceptor
+import ru.example.gitsource.data.auth.TokenManager
+import ru.example.gitsource.data.local.DataConstants.PREFERENCES_NAME
 import ru.example.gitsource.data.local.LocalDataStore
 import ru.example.gitsource.data.network.JsonAcceptInterceptor
+import ru.example.gitsource.data.network.NetworkClient
+import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
+import ru.example.gitsource.data.network.api.GitHubApi
+import ru.example.gitsource.data.network.api.GitHubOAuthApi
+import ru.example.gitsource.domain.AuthRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 internal object AppModule {
+
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        authInterceptor: AuthTokenInterceptor,
+        jsonAcceptInterceptor: JsonAcceptInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(JsonAcceptInterceptor())
+            .addInterceptor(authInterceptor)
+            .addInterceptor(jsonAcceptInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -39,7 +50,7 @@ internal object AppModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BASE_API_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -47,8 +58,20 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideGitHubApi(retrofit: Retrofit): GitHubOAuthService {
-        return retrofit.create(GitHubOAuthService::class.java)
+    fun provideNetworkClient(retrofit: Retrofit): NetworkClient {
+        return NetworkClient(retrofit)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubOAuthService(networkClient: NetworkClient): GitHubOAuthApi {
+        return networkClient.create(GitHubOAuthApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGitHubApi(networkClient: NetworkClient): GitHubApi {
+        return networkClient.create(GitHubApi::class.java)
     }
 
     @Provides
@@ -63,5 +86,25 @@ internal object AppModule {
     @Provides
     fun provideLocalDataStore(dataStore: DataStore<Preferences>): LocalDataStore {
         return LocalDataStore(dataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        gitHubOAuthApi: GitHubOAuthApi,
+        networkClient: NetworkClient,
+        tokenManager: TokenManager
+    ): AuthRepository {
+        return AuthRepositoryImpl(
+            gitHubOAuthApi = gitHubOAuthApi,
+            networkClient = networkClient,
+            tokenManager = tokenManager
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenManager(localDataStore: LocalDataStore): TokenManager {
+        return TokenManager(localDataStore)
     }
 }
