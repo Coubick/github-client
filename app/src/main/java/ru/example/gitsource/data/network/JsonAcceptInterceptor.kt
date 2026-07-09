@@ -11,10 +11,13 @@ internal class JsonAcceptInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response? {
         val originalRequest = chain.request()
-        val header = originalRequest.headers().get("HEADER_NAME")
+        val header = originalRequest
+            .headers()
+            .get(HEADER_NAME)
 
         if (header == null){
-            val newRequest = originalRequest.newBuilder()
+            val newRequest = originalRequest
+                .newBuilder()
                 .header(HEADER_NAME, OAUTH_HEADER_VALUE)
                 .build()
 

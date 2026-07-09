@@ -18,7 +18,8 @@ internal class AuthTokenInterceptor @Inject constructor(private val tokenManager
             tokenManager.getToken()
         }
 
-        val newRequest = originalRequest.newBuilder()
+        val newRequest = originalRequest
+            .newBuilder()
             .addHeader(HEADER_NAME, "$HEADER_VALUE $token")
             .build()
         return chain.proceed(newRequest)
