@@ -2,7 +2,6 @@ package ru.example.gitsource.data.network
 
 sealed class NetworkError : Exception() {
 
-    data class HttpError(val code: Int, override val message: String?) : NetworkError()
     data class OAuthError(val error: String, val description: String?) : NetworkError()
     data class NetworkException(override val cause: Throwable) : NetworkError()
     data object EmptyResponseBody : NetworkError()

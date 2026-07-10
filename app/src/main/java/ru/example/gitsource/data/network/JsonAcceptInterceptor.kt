@@ -2,8 +2,9 @@ package ru.example.gitsource.data.network
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
-internal class JsonAcceptInterceptor : Interceptor {
+internal class JsonAcceptInterceptor @Inject constructor() : Interceptor {
     private companion object {
         const val HEADER_NAME = "Accept"
         const val OAUTH_HEADER_VALUE = "application/json"

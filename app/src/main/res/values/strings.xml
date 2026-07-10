@@ -4,4 +4,13 @@
     <string name="login">Войти</string>
     <string name="popular_repo_screen">Тут будет список популярных репозиториев</string>
     <string name="back_button">Назад</string>
+
+    <string name="error_unauthorized">Неверный код авторизации</string>
+    <string name="error_not_found">Ресурс не найден</string>
+    <string name="error_server">Ошибка сервера</string>
+    <string name="error_bad_request">Некорректный запрос</string>
+    <string name="error_empty_response">Пустой ответ от сервера</string>
+    <string name="error_oauth">Ошибка авторизации: %1$s</string>
+    <string name="error_network">Ошибка сети</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
 </resources>

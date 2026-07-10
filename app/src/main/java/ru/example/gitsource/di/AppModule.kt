@@ -13,6 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.example.gitsource.data.OAuthLauncherImpl
 import ru.example.gitsource.data.auth.AuthRepositoryImpl
 import ru.example.gitsource.data.auth.AuthTokenInterceptor
 import ru.example.gitsource.data.auth.TokenManager
@@ -24,6 +25,7 @@ import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
 import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.domain.AuthRepository
+import ru.example.gitsource.domain.OAuthLauncher
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -106,5 +108,13 @@ internal object AppModule {
     @Singleton
     fun provideTokenManager(localDataStore: LocalDataStore): TokenManager {
         return TokenManager(localDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOAuthLauncher(
+        @ApplicationContext context: Context
+    ): OAuthLauncher {
+        return OAuthLauncherImpl(context)
     }
 }

@@ -18,6 +18,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "GITHUB_CLIENT_ID", "\"${project.findProperty("GITHUB_CLIENT_ID")}\"")
+        buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"${project.findProperty("GITHUB_CLIENT_SECRET")}\"")
     }
 
     buildTypes {
@@ -36,6 +38,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -64,6 +67,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.browser)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }
