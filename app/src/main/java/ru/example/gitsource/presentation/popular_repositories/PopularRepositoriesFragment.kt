@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.fragments
+package ru.example.gitsource.presentation.popular_repositories
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
-import ru.example.gitsource.presentation.screens.PopularRepositoriesScreen
 
 @AndroidEntryPoint
 internal class PopularRepositoriesFragment : Fragment() {

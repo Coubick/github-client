@@ -1,10 +1,9 @@
-package ru.example.gitsource.presentation
+package ru.example.gitsource.presentation.auth
 
-import android.content.Context
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -12,8 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.example.gitsource.BuildConfig
-import ru.example.gitsource.R
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.AuthAction
 import ru.example.gitsource.domain.AuthEvent
@@ -24,8 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
-    @ApplicationContext val context: Context
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow(AuthUiState())
     val state: StateFlow<AuthUiState> = _state.asStateFlow()
@@ -42,19 +39,14 @@ internal class AuthViewModel @Inject constructor(
 
     private fun handleLoginClick() {
         viewModelScope.launch {
-            _events.emit(AuthEvent.LaunchAuth(BuildConfig.GITHUB_CLIENT_ID))
+            _events.emit(AuthEvent.LaunchAuth)
         }
     }
 
     private fun handleGitHubAuthCode(code: String) {
         viewModelScope.launch {
-            _state.value = AuthUiState(isLoading = true)
 
-            val result = repository.login(
-                clientId = BuildConfig.GITHUB_CLIENT_ID,
-                clientSecret = BuildConfig.GITHUB_CLIENT_SECRET,
-                code = code
-            )
+            val result = repository.login(code = code)
 
             result.fold(
                 onSuccess = {
@@ -63,13 +55,8 @@ internal class AuthViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     _state.value = AuthUiState(isLoading = false)
-                    val message = if (error is NetworkError) {
-                        ErrorMapper.mapToStringMessage(context, error)
-                    } else {
-                        context.getString(R.string.error_unknown)
-                    }
-
-                    _events.emit(AuthEvent.ShowError(message))
+                    val networkError = error as? NetworkError ?: NetworkError.Unknown
+                    _events.emit(AuthEvent.ShowError(networkError))
                 }
             )
         }

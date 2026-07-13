@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -18,8 +21,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "GITHUB_CLIENT_ID", "\"${project.findProperty("GITHUB_CLIENT_ID")}\"")
-        buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"${project.findProperty("GITHUB_CLIENT_SECRET")}\"")
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+
+        localProperties.load(FileInputStream(localPropertiesFile))
+
+        val githubClientId = localProperties.getProperty("GITHUB_CLIENT_ID")
+        val githubClientSecret = localProperties.getProperty("GITHUB_CLIENT_SECRET")
+
+        buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientId\"")
+        buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecret\"")
     }
 
     buildTypes {

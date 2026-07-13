@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.fragments
+package ru.example.gitsource.presentation.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,9 +18,7 @@ import ru.example.gitsource.domain.AuthEvent
 import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
-import ru.example.gitsource.presentation.AuthViewModel
-import ru.example.gitsource.presentation.screens.AuthScreen
-import ru.example.gitsource.presentation.screens.Screen
+import ru.example.gitsource.presentation.Screen
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,11 +26,11 @@ internal class AuthFragment : Fragment() {
 
     @Inject
     lateinit var navigator: Navigator
+
     @Inject
     lateinit var oAuthLauncher: OAuthLauncher
 
     private val viewModel: AuthViewModel by viewModels()
-
 
 
     override fun onCreateView(
@@ -61,11 +59,17 @@ internal class AuthFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
+        val code = arguments?.getString("code")
+
+        if (!code.isNullOrEmpty()) {
+            viewModel.onAction(AuthAction.AuthCodeReceived(code))
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
                     is AuthEvent.LaunchAuth -> {
-                        oAuthLauncher.launchAuth(event.clientId)
+                        oAuthLauncher.launchAuth(requireContext())
                     }
 
                     is AuthEvent.NavigateToPopular -> {
@@ -74,7 +78,11 @@ internal class AuthFragment : Fragment() {
                     }
 
                     is AuthEvent.ShowError -> {
-                        Toast.makeText(requireContext(), event.error, Toast.LENGTH_LONG).show()
+                        val message = ErrorMapper.mapToStringMessage(
+                            requireContext(),
+                            event.error
+                        )
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                     }
                 }
             }

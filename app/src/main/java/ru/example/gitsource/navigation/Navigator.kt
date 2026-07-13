@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
-import ru.example.gitsource.presentation.screens.toDestinationId
+import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
 @ActivityScoped

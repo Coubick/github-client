@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.screens
+package ru.example.gitsource.presentation.auth
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
-import ru.example.gitsource.presentation.screens.default_sizes.SpaceDefaults
-import ru.example.gitsource.presentation.screens.default_sizes.TextFieldDefaults
-
+import ru.example.gitsource.presentation.default_sizes.SpaceDefaults
+import ru.example.gitsource.presentation.default_sizes.TextFieldDefaults
 
 @Composable
 fun AuthScreen(onLoginClick: () -> Unit) {
@@ -28,7 +27,9 @@ fun AuthScreen(onLoginClick: () -> Unit) {
             text = stringResource(R.string.title),
             fontSize = TextFieldDefaults.LargeFontSize
         )
-        Spacer(modifier = Modifier.height(SpaceDefaults.SpaceSize))
+
+        Spacer(modifier = Modifier.Companion.height(SpaceDefaults.SpaceSize))
+
         Button(onClick = onLoginClick) {
             Text(stringResource(R.string.login))
         }

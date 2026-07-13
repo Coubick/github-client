@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.example.gitsource.data.OAuthLauncherImpl
+import ru.example.gitsource.data.auth.OAuthLauncherImpl
 import ru.example.gitsource.data.auth.AuthRepositoryImpl
 import ru.example.gitsource.data.auth.AuthTokenInterceptor
 import ru.example.gitsource.data.auth.TokenManager
@@ -113,8 +113,7 @@ internal object AppModule {
     @Provides
     @Singleton
     fun provideOAuthLauncher(
-        @ApplicationContext context: Context
     ): OAuthLauncher {
-        return OAuthLauncherImpl(context)
+        return OAuthLauncherImpl()
     }
 }

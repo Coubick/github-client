@@ -6,12 +6,15 @@
 
     <fragment
         android:id="@+id/authFragment"
-        android:name="ru.example.gitsource.presentation.fragments.AuthFragment"
-        android:label="AuthFragment" />
+        android:name="ru.example.gitsource.presentation.auth.AuthFragment"
+        android:label="AuthFragment">
+
+        <deepLink app:uri="gitsource://oauth?code={code}&amp;" />
+    </fragment>
 
     <fragment
         android:id="@+id/popularRepositoriesFragment"
-        android:name="ru.example.gitsource.presentation.fragments.PopularRepositoriesFragment"
+        android:name="ru.example.gitsource.presentation.popular_repositories.PopularRepositoriesFragment"
         android:label="PopularRepositoriesFragment" />
 
 </navigation>

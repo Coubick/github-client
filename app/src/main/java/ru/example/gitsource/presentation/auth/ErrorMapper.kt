@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation
+package ru.example.gitsource.presentation.auth
 
 import android.content.Context
 import ru.example.gitsource.R

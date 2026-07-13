@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.screens
+package ru.example.gitsource.presentation.popular_repositories
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight

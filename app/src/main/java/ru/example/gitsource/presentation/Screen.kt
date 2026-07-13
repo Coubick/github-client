@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.screens
+package ru.example.gitsource.presentation
 
 import ru.example.gitsource.R
 
