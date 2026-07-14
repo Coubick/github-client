@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
+import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
@@ -25,6 +26,13 @@ internal class Navigator @Inject constructor() {
             is Command.NavigateToCommand -> {
                 val navigateTo = command.screen.toDestinationId()
                 navController?.navigate(navigateTo)
+            }
+
+            is Command.NavigateToAndPopUpTo -> {
+                val navigateTo = command.screen.toDestinationId()
+                navController?.navigate(navigateTo){
+                    popUpTo(command.clearUpTo) { inclusive = true }
+                }
             }
         }
     }

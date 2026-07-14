@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.CheckLoginStatus
 import ru.example.gitsource.navigation.Command
@@ -40,7 +41,10 @@ internal class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             if (loginChecker.isLoggedIn()) {
-                navigator.execute(Command.NavigateToCommand(Screen.PopularRepositoriesScreen))
+                navigator.execute(Command
+                    .NavigateToAndPopUpTo(
+                        Screen.PopularRepositoriesScreen,
+                        Screen.AuthScreen))
             }
         }
     }

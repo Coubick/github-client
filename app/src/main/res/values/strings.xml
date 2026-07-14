@@ -13,4 +13,5 @@
     <string name="error_oauth">Ошибка авторизации: %1$s</string>
     <string name="error_network">Ошибка сети</string>
     <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="logo_description">"Логотип GitSource "</string>
 </resources>
