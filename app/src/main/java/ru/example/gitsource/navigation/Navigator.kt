@@ -3,10 +3,12 @@ package ru.example.gitsource.navigation
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
-import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
@@ -29,10 +31,16 @@ internal class Navigator @Inject constructor() {
             }
 
             is Command.NavigateToAndPopUpTo -> {
-                val navigateTo = command.screen.toDestinationId()
-                navController?.navigate(navigateTo){
-                    popUpTo(command.clearUpTo) { inclusive = true }
+                val destinationId = command.screen.toDestinationId()
+                val popUpToId = command.clearUpTo.toDestinationId()
+
+                val options = navOptions {
+                    popUpTo(popUpToId) {
+                        inclusive = true
+                    }
                 }
+
+                navController?.navigate(destinationId, null, options)
             }
         }
     }
@@ -52,7 +60,8 @@ internal class Navigator @Inject constructor() {
     fun setupBackPressedHandler() {
         onBackPressedDispatcher.addCallback(activity) {
             val currentDestination = navController?.currentDestination?.id
-            if (currentDestination == R.id.authFragment) {
+            val hasPreviousScreen = navController?.previousBackStackEntry != null
+            if (currentDestination == R.id.authFragment || !hasPreviousScreen) {
                 activity?.finish()
             } else {
                 navController?.popBackStack()

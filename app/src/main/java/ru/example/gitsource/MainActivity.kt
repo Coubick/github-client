@@ -43,8 +43,8 @@ internal class MainActivity : AppCompatActivity() {
             if (loginChecker.isLoggedIn()) {
                 navigator.execute(Command
                     .NavigateToAndPopUpTo(
-                        Screen.PopularRepositoriesScreen,
-                        Screen.AuthScreen))
+                        screen = Screen.PopularRepositoriesScreen,
+                        clearUpTo = Screen.AuthScreen))
             }
         }
     }
