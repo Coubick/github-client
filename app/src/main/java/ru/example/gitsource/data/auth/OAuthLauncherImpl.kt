@@ -3,7 +3,6 @@ package ru.example.gitsource.data.auth
 import android.content.Context
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.net.toUri
-import ru.example.gitsource.BuildConfig
 import ru.example.gitsource.data.network.NetworkConstants
 import ru.example.gitsource.domain.OAuthLauncher
 import javax.inject.Inject
@@ -18,7 +17,7 @@ internal class OAuthLauncherImpl @Inject constructor() : OAuthLauncher {
 
     private fun buildUrl(): String {
         return NetworkConstants.AUTHORIZE_URL +
-                "?client_id=${BuildConfig.GITHUB_CLIENT_ID}" +
+                "?client_id=${NetworkConstants.GITHUB_CLIENT_ID_DEV}" +
                 "&redirect_uri=${NetworkConstants.REDIRECT_URI}"
     }
 }

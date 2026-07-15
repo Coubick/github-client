@@ -1,44 +1,22 @@
 package ru.example.gitsource.presentation.auth
 
-import android.content.Context
+import androidx.annotation.StringRes
 import ru.example.gitsource.R
 import ru.example.gitsource.data.network.NetworkError
 
 object ErrorMapper {
 
-    fun mapToStringMessage(context: Context, error: NetworkError): String {
+    @StringRes
+    fun mapToStringMessage(error: NetworkError): Int {
         return when (error) {
-            is NetworkError.OAuthError -> {
-                context.getString(R.string.error_oauth)
-            }
-
-            is NetworkError.NetworkException -> {
-                context.getString(R.string.error_network)
-            }
-
-            is NetworkError.EmptyResponseBody -> {
-                context.getString(R.string.error_empty_response)
-            }
-
-            is NetworkError.Unauthorized -> {
-                context.getString(R.string.error_unauthorized)
-            }
-
-            is NetworkError.NotFound -> {
-                context.getString(R.string.error_not_found)
-            }
-
-            is NetworkError.BadRequest -> {
-                context.getString(R.string.error_bad_request)
-            }
-
-            is NetworkError.ServerError -> {
-                context.getString(R.string.error_server)
-            }
-
-            is NetworkError.Unknown -> {
-                context.getString(R.string.error_unknown)
-            }
+            is NetworkError.OAuthError -> R.string.error_oauth
+            is NetworkError.NetworkException -> R.string.error_network
+            is NetworkError.EmptyResponseBody -> R.string.error_empty_response
+            is NetworkError.Unauthorized -> R.string.error_unauthorized
+            is NetworkError.NotFound -> R.string.error_not_found
+            is NetworkError.BadRequest -> R.string.error_bad_request
+            is NetworkError.ServerError -> R.string.error_server
+            is NetworkError.Unknown -> R.string.error_unknown
         }
     }
 }

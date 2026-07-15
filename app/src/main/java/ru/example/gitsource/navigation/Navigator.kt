@@ -3,8 +3,6 @@ package ru.example.gitsource.navigation
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
@@ -40,7 +38,11 @@ internal class Navigator @Inject constructor() {
                     }
                 }
 
-                navController?.navigate(destinationId, null, options)
+                navController
+                    ?.navigate(
+                        resId = destinationId,
+                        args = null,
+                        navOptions = options)
             }
         }
     }

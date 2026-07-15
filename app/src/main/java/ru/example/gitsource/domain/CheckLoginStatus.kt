@@ -8,6 +8,9 @@ internal class CheckLoginStatus @Inject constructor(
 ){
 
     suspend fun isLoggedIn(): Boolean {
-        return !tokenManager.getToken().isNullOrEmpty()
+        return tokenManager
+            .getToken()
+            .isNullOrEmpty()
+            .not()
     }
 }

@@ -1,7 +1,7 @@
 package ru.example.gitsource.presentation.auth
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,8 +21,18 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    init {
+        val code = savedStateHandle.get<String>("code")
+
+        if (!code.isNullOrEmpty()){
+            handleGitHubAuthCode(code)
+        }
+
+        savedStateHandle.remove<String>("code")
+    }
 
     private val _state = MutableStateFlow(AuthUiState())
     val state: StateFlow<AuthUiState> = _state.asStateFlow()
@@ -32,12 +42,11 @@ internal class AuthViewModel @Inject constructor(
 
     fun onAction(action: AuthAction) {
         when (action) {
-            is AuthAction.LoginClicked -> handleLoginClick()
-            is AuthAction.AuthCodeReceived -> handleGitHubAuthCode(action.code)
+            is AuthAction.LoginClicked -> onLoginClick()
         }
     }
 
-    private fun handleLoginClick() {
+    private fun onLoginClick() {
         viewModelScope.launch {
             _events.emit(AuthEvent.LaunchAuth)
         }
@@ -56,7 +65,8 @@ internal class AuthViewModel @Inject constructor(
                 onFailure = { error ->
                     _state.value = AuthUiState(isLoading = false)
                     val networkError = error as? NetworkError ?: NetworkError.Unknown
-                    _events.emit(AuthEvent.ShowError(networkError))
+                    val resId = ErrorMapper.mapToStringMessage(networkError)
+                    _events.emit(AuthEvent.ShowError(resId))
                 }
             )
         }

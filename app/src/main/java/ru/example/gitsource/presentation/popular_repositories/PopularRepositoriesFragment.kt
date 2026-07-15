@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import dagger.hilt.android.AndroidEntryPoint
+import ru.example.gitsource.theme.GitSourceTheme
 
 @AndroidEntryPoint
 internal class PopularRepositoriesFragment : Fragment() {
@@ -19,7 +20,7 @@ internal class PopularRepositoriesFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                MaterialTheme {
+                GitSourceTheme {
                     PopularRepositoriesScreen()
                 }
             }

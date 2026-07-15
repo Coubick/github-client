@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.CheckLoginStatus
 import ru.example.gitsource.navigation.Command
@@ -19,6 +18,7 @@ internal class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var navigator: Navigator
+
     @Inject
     lateinit var loginChecker: CheckLoginStatus
 
@@ -27,6 +27,16 @@ internal class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initNavigator()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.handleDeepLink(intent)
     }
 
     private fun initNavigator() {
@@ -39,23 +49,20 @@ internal class MainActivity : AppCompatActivity() {
         navigator.setActivity(this)
         navigator.setupBackPressedHandler()
 
-        lifecycleScope.launch {
-            if (loginChecker.isLoggedIn()) {
-                navigator.execute(Command
-                    .NavigateToAndPopUpTo(
-                        screen = Screen.PopularRepositoriesScreen,
-                        clearUpTo = Screen.AuthScreen))
-            }
-        }
+        checkLogin()
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.activity_main) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.handleDeepLink(intent)
+    private fun checkLogin() {
+        lifecycleScope.launch {
+            if (loginChecker.isLoggedIn()) {
+                navigator.execute(
+                    Command
+                        .NavigateToAndPopUpTo(
+                            screen = Screen.PopularRepositoriesScreen,
+                            clearUpTo = Screen.AuthScreen
+                        )
+                )
+            }
+        }
     }
 }

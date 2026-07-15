@@ -1,7 +1,7 @@
 package ru.example.gitsource.data.auth
 
-import ru.example.gitsource.BuildConfig
 import ru.example.gitsource.data.network.NetworkClient
+import ru.example.gitsource.data.network.NetworkConstants
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.domain.AuthRepository
@@ -18,8 +18,8 @@ internal class AuthRepositoryImpl @Inject constructor(
     ): Result<Unit> {
         return networkClient.execute {
             gitHubOAuthApi.getAccessToken(
-                clientId = BuildConfig.GITHUB_CLIENT_ID,
-                clientSecret = BuildConfig.GITHUB_CLIENT_SECRET,
+                clientId = NetworkConstants.GITHUB_CLIENT_ID_DEV,
+                clientSecret = NetworkConstants.GITHUB_CLIENT_SECRET_DEV,
                 code = code
             )
         }.fold(

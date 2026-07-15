@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -19,6 +18,7 @@ import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
+import ru.example.gitsource.theme.GitSourceTheme
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,7 +49,7 @@ internal class AuthFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
 
             setContent {
-                MaterialTheme {
+                GitSourceTheme {
                     AuthScreen(
                         onLoginClick = {
                             viewModel.onAction(AuthAction.LoginClicked)
@@ -66,12 +66,6 @@ internal class AuthFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val code = arguments?.getString("code")
-
-        if (!code.isNullOrEmpty()) {
-            viewModel.onAction(AuthAction.AuthCodeReceived(code))
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
@@ -85,11 +79,11 @@ internal class AuthFragment : Fragment() {
                     }
 
                     is AuthEvent.ShowError -> {
-                        val message = ErrorMapper.mapToStringMessage(
+                        Toast.makeText(
                             requireContext(),
-                            event.error
-                        )
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                            event.errorMessageResId,
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }

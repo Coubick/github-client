@@ -27,11 +27,17 @@ android {
 
         localProperties.load(FileInputStream(localPropertiesFile))
 
-        val githubClientId = localProperties.getProperty("GITHUB_CLIENT_ID")
-        val githubClientSecret = localProperties.getProperty("GITHUB_CLIENT_SECRET")
+        val githubClientIdDev = localProperties.getProperty("GITHUB_CLIENT_ID_DEV")
+        val githubClientSecretDev = localProperties.getProperty("GITHUB_CLIENT_SECRET_DEV")
 
-        buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientId\"")
-        buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecret\"")
+        val githubClientIdProd = localProperties.getProperty("GITHUB_CLIENT_ID_PROD")
+        val githubClientSecretProd = localProperties.getProperty("GITHUB_CLIENT_SECRET_PROD")
+
+        buildConfigField("String", "GITHUB_CLIENT_ID_DEV", "\"$githubClientIdDev\"")
+        buildConfigField("String", "GITHUB_CLIENT_SECRET_DEV", "\"$githubClientSecretDev\"")
+
+        buildConfigField("String", "GITHUB_CLIENT_ID_PROD", "\"$githubClientIdProd\"")
+        buildConfigField("String", "GITHUB_CLIENT_SECRET_PROD", "\"$githubClientSecretProd\"")
     }
 
     buildTypes {

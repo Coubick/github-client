@@ -9,6 +9,11 @@
         android:name="ru.example.gitsource.presentation.auth.AuthFragment"
         android:label="AuthFragment">
 
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+
         <deepLink app:uri="gitsource://oauth?code={code}&amp;" />
     </fragment>
 
