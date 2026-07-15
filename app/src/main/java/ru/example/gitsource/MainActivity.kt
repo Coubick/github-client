@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.example.gitsource.domain.CheckLoginStatus
+import ru.example.gitsource.domain.LoginStatusChecker
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
@@ -20,7 +20,7 @@ internal class MainActivity : AppCompatActivity() {
     lateinit var navigator: Navigator
 
     @Inject
-    lateinit var loginChecker: CheckLoginStatus
+    lateinit var loginChecker: LoginStatusChecker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +57,9 @@ internal class MainActivity : AppCompatActivity() {
             if (loginChecker.isLoggedIn()) {
                 navigator.execute(
                     Command
-                        .NavigateToAndPopUpTo(
+                        .NavigateToAndClearCommand(
                             screen = Screen.PopularRepositoriesScreen,
-                            clearUpTo = Screen.AuthScreen
+                            clearToScreen = Screen.AuthScreen
                         )
                 )
             }

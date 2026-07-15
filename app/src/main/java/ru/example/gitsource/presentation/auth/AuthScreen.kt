@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,8 +24,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
+import ru.example.gitsource.domain.AuthUiState
+import ru.example.gitsource.presentation.defaultSizes.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.borderWidthMedium
 import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.cornerShapeMedium
 import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.imageSizeMedium
@@ -32,56 +34,59 @@ import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.shadowElev
 import ru.example.gitsource.presentation.defaultSizes.SpaceDefaults
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier, onLoginClick: () -> Unit) {
+internal fun AuthScreen(
+    state: AuthUiState,
+    modifier: Modifier = Modifier,
+    onLoginClick: () -> Unit,
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-                Image(
-                    painter = painterResource(R.drawable.gitlogo),
-                    contentDescription = stringResource(R.string.logo_description),
-                    modifier = modifier
-                        .size(imageSizeMedium)
-                        .clip(
-                            shape = RoundedCornerShape(cornerShapeMedium),
-                        )
-                        .border(
-                            width = borderWidthMedium,
-                            color = Color.Gray,
-                            shape = RoundedCornerShape(cornerShapeMedium),
-                        )
-                        .shadow(
-                            elevation = shadowElevationHuge,
-                            shape = CircleShape,
-                            clip = false,
-                            ambientColor = Color.LightGray,
-                            spotColor = Color.LightGray,
-                        )
+        Image(
+            painter = painterResource(R.drawable.gitlogo),
+            contentDescription = stringResource(R.string.logo_description),
+            modifier = Modifier
+                .size(imageSizeMedium)
+                .clip(
+                    shape = RoundedCornerShape(cornerShapeMedium),
                 )
+                .border(
+                    width = borderWidthMedium,
+                    color = Color.Gray,
+                    shape = RoundedCornerShape(cornerShapeMedium),
+                )
+                .shadow(
+                    elevation = shadowElevationHuge,
+                    shape = CircleShape,
+                    clip = false,
+                    ambientColor = Color.LightGray,
+                    spotColor = Color.LightGray,
+                )
+        )
 
-                Spacer(modifier = modifier.height(SpaceDefaults.SpaceSize))
+        Spacer(modifier = Modifier.height(SpaceDefaults.SpaceSize))
 
-                Button(
-                    onClick = onLoginClick,
-                    modifier = modifier.width(imageSizeMedium),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                ) {
-                    Text(
-                        text = stringResource(R.string.login),
-                    )
-                }
+        Button(
+            onClick = onLoginClick,
+            modifier = Modifier.width(imageSizeMedium),
+            enabled = state.isLoading.not(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+        ) {
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(CircularProgressIndicatorDefaults.smallSize),
+                    strokeWidth = CircularProgressIndicatorDefaults.smallStroke
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.login),
+                )
             }
-
-}
-
-@Composable
-@Preview
-fun PreviewAuthScreen() {
-    AuthScreen(
-        onLoginClick = {}
-    )
+        }
+    }
 }

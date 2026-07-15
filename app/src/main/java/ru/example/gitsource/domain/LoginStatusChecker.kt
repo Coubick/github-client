@@ -3,7 +3,7 @@ package ru.example.gitsource.domain
 import ru.example.gitsource.data.auth.TokenManager
 import javax.inject.Inject
 
-internal class CheckLoginStatus @Inject constructor(
+internal class LoginStatusChecker @Inject constructor(
     private val tokenManager: TokenManager
 ){
 

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.AuthAction
 import ru.example.gitsource.domain.AuthEvent
 import ru.example.gitsource.domain.AuthRepository
@@ -24,14 +23,18 @@ internal class AuthViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    init {
-        val code = savedStateHandle.get<String>("code")
+    private companion object {
+        const val KEY_AUTH_CODE = "code"
+    }
 
-        if (code.isNullOrEmpty().not()){
+    init {
+        val code = savedStateHandle.get<String>(KEY_AUTH_CODE)
+
+        if (code.isNullOrEmpty().not()) {
             onGitHubAuthCode(code)
         }
 
-        savedStateHandle.remove<String>("code")
+        savedStateHandle.remove<String>(KEY_AUTH_CODE)
     }
 
     private val _state = MutableStateFlow(AuthUiState())
@@ -54,6 +57,7 @@ internal class AuthViewModel @Inject constructor(
 
     private fun onGitHubAuthCode(code: String) {
         viewModelScope.launch {
+            _state.value = AuthUiState(isLoading = true)
 
             val result = repository.login(code = code)
 
@@ -64,8 +68,7 @@ internal class AuthViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     _state.value = AuthUiState(isLoading = false)
-                    val networkError = error as? NetworkError ?: NetworkError.Unknown
-                    val resId = ErrorMapper.mapToStringMessage(networkError)
+                    val resId = ErrorMapper.mapToStringMessage(error)
                     _events.emit(AuthEvent.ShowError(resId))
                 }
             )

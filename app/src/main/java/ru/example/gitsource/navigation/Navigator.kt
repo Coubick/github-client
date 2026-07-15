@@ -21,6 +21,10 @@ internal class Navigator @Inject constructor(
     private var activity: AppCompatActivity? = null
     private var context: Context? = null
 
+    private companion object {
+        const val CONTEXT_IS_NULL_MESSAGE = "Context is null"
+    }
+
     fun execute(command: Command) {
         when (command) {
             Command.BackCommand -> {
@@ -32,12 +36,13 @@ internal class Navigator @Inject constructor(
                 navController?.navigate(navigateTo)
             }
 
-            is Command.NavigateToAndPopUpTo -> {
+            is Command.NavigateToAndClearCommand -> {
                 val destinationId = command.screen.toDestinationId()
-                val popUpToId = command.clearUpTo.toDestinationId()
+                val clearToId = command.clearToScreen.toDestinationId()
 
                 val options = navOptions {
-                    popUpTo(popUpToId) {
+                    launchSingleTop = true
+                    popUpTo(clearToId) {
                         inclusive = true
                     }
                 }
@@ -46,7 +51,8 @@ internal class Navigator @Inject constructor(
                     ?.navigate(
                         resId = destinationId,
                         args = null,
-                        navOptions = options)
+                        navOptions = options
+                    )
             }
         }
     }
@@ -75,11 +81,12 @@ internal class Navigator @Inject constructor(
         }
     }
 
-    fun setContext(context: Context){
+    fun setContext(context: Context) {
         this.context = context
     }
 
-    fun launchOAuth(){
-        oAuthLauncher.launchOAuth(context!!)
+    fun launchOAuth() {
+        val ctx = requireNotNull(context) { CONTEXT_IS_NULL_MESSAGE }
+        oAuthLauncher.launchOAuth(ctx)
     }
 }

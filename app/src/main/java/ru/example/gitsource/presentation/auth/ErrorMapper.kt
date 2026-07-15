@@ -7,7 +7,8 @@ import ru.example.gitsource.data.network.NetworkError
 object ErrorMapper {
 
     @StringRes
-    fun mapToStringMessage(error: NetworkError): Int {
+    fun mapToStringMessage(networkError: Throwable): Int {
+        val error = networkError as? NetworkError ?: NetworkError.Unknown
         return when (error) {
             is NetworkError.OAuthError -> R.string.error_oauth
             is NetworkError.NetworkException -> R.string.error_network
