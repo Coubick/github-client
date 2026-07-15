@@ -63,7 +63,7 @@ internal class Navigator @Inject constructor() {
         onBackPressedDispatcher.addCallback(activity) {
             val currentDestination = navController?.currentDestination?.id
             val hasPreviousScreen = navController?.previousBackStackEntry != null
-            if (currentDestination == R.id.authFragment || !hasPreviousScreen) {
+            if (currentDestination == R.id.authFragment || hasPreviousScreen.not()) {
                 activity?.finish()
             } else {
                 navController?.popBackStack()

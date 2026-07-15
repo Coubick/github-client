@@ -27,6 +27,7 @@ internal class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initNavigator()
+        checkLogin()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -48,8 +49,6 @@ internal class MainActivity : AppCompatActivity() {
         navigator.setOnBackPressedDispatcher(onBackPressedDispatcher)
         navigator.setActivity(this)
         navigator.setupBackPressedHandler()
-
-        checkLogin()
     }
 
     private fun checkLogin() {

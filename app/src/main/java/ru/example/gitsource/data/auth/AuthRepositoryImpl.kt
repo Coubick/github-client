@@ -18,8 +18,8 @@ internal class AuthRepositoryImpl @Inject constructor(
     ): Result<Unit> {
         return networkClient.execute {
             gitHubOAuthApi.getAccessToken(
-                clientId = NetworkConstants.GITHUB_CLIENT_ID_DEV,
-                clientSecret = NetworkConstants.GITHUB_CLIENT_SECRET_DEV,
+                clientId = NetworkConstants.GITHUB_CLIENT_ID,
+                clientSecret = NetworkConstants.GITHUB_CLIENT_SECRET,
                 code = code
             )
         }.fold(

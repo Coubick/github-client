@@ -2,7 +2,6 @@ package ru.example.gitsource.presentation.popular_repositories
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +24,6 @@ fun PopularRepositoriesScreen(
             .fillMaxWidth()
             .wrapContentHeight(Alignment.CenterVertically),
         color = MaterialTheme.colorScheme.onBackground,
-        style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground),
     )
 }
 

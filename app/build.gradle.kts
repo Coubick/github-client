@@ -9,6 +9,18 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+localProperties.load(FileInputStream(localPropertiesFile))
+
+val githubClientIdDev = localProperties.getProperty("GITHUB_CLIENT_ID_DEV")
+val githubClientSecretDev = localProperties.getProperty("GITHUB_CLIENT_SECRET_DEV")
+
+val githubClientIdProd = localProperties.getProperty("GITHUB_CLIENT_ID_PROD")
+val githubClientSecretProd = localProperties.getProperty("GITHUB_CLIENT_SECRET_PROD")
+
+
 android {
     namespace = "ru.example.gitsource"
     compileSdk = 37
@@ -21,32 +33,26 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-
-        localProperties.load(FileInputStream(localPropertiesFile))
-
-        val githubClientIdDev = localProperties.getProperty("GITHUB_CLIENT_ID_DEV")
-        val githubClientSecretDev = localProperties.getProperty("GITHUB_CLIENT_SECRET_DEV")
-
-        val githubClientIdProd = localProperties.getProperty("GITHUB_CLIENT_ID_PROD")
-        val githubClientSecretProd = localProperties.getProperty("GITHUB_CLIENT_SECRET_PROD")
-
-        buildConfigField("String", "GITHUB_CLIENT_ID_DEV", "\"$githubClientIdDev\"")
-        buildConfigField("String", "GITHUB_CLIENT_SECRET_DEV", "\"$githubClientSecretDev\"")
-
-        buildConfigField("String", "GITHUB_CLIENT_ID_PROD", "\"$githubClientIdProd\"")
-        buildConfigField("String", "GITHUB_CLIENT_SECRET_PROD", "\"$githubClientSecretProd\"")
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+
+            buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientIdDev\"")
+            buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecretDev\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientIdProd\"")
+            buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecretProd\"")
+
         }
     }
 

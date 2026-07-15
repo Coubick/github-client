@@ -17,7 +17,7 @@ internal class OAuthLauncherImpl @Inject constructor() : OAuthLauncher {
 
     private fun buildUrl(): String {
         return NetworkConstants.AUTHORIZE_URL +
-                "?client_id=${NetworkConstants.GITHUB_CLIENT_ID_DEV}" +
+                "?client_id=${NetworkConstants.GITHUB_CLIENT_ID}" +
                 "&redirect_uri=${NetworkConstants.REDIRECT_URI}"
     }
 }

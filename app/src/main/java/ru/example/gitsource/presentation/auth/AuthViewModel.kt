@@ -27,8 +27,8 @@ internal class AuthViewModel @Inject constructor(
     init {
         val code = savedStateHandle.get<String>("code")
 
-        if (!code.isNullOrEmpty()){
-            handleGitHubAuthCode(code)
+        if (code.isNullOrEmpty().not()){
+            onGitHubAuthCode(code)
         }
 
         savedStateHandle.remove<String>("code")
@@ -52,7 +52,7 @@ internal class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun handleGitHubAuthCode(code: String) {
+    private fun onGitHubAuthCode(code: String) {
         viewModelScope.launch {
 
             val result = repository.login(code = code)

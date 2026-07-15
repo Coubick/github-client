@@ -8,6 +8,6 @@ internal object NetworkConstants {
     const val REDIRECT_URI = "gitsource://oauth"
     const val AUTHORIZE_URL = "https://github.com/login/oauth/authorize"
 
-    const val GITHUB_CLIENT_ID_DEV = BuildConfig.GITHUB_CLIENT_ID_DEV
-    const val GITHUB_CLIENT_SECRET_DEV = BuildConfig.GITHUB_CLIENT_SECRET_DEV
+    const val GITHUB_CLIENT_ID = BuildConfig.GITHUB_CLIENT_ID
+    const val GITHUB_CLIENT_SECRET = BuildConfig.GITHUB_CLIENT_SECRET
 }
