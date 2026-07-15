@@ -1,5 +1,6 @@
 package ru.example.gitsource.navigation
 
+import android.content.Context
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -7,15 +8,18 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
+import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
 @ActivityScoped
-internal class Navigator @Inject constructor() {
+internal class Navigator @Inject constructor(
+    private val oAuthLauncher: OAuthLauncher
+) {
     private var navController: NavController? = null
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
-
     private var activity: AppCompatActivity? = null
+    private var context: Context? = null
 
     fun execute(command: Command) {
         when (command) {
@@ -69,5 +73,13 @@ internal class Navigator @Inject constructor() {
                 navController?.popBackStack()
             }
         }
+    }
+
+    fun setContext(context: Context){
+        this.context = context
+    }
+
+    fun launchOAuth(){
+        oAuthLauncher.launchOAuth(context!!)
     }
 }

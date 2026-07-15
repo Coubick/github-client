@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.AuthAction
 import ru.example.gitsource.domain.AuthEvent
-import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
@@ -27,11 +26,7 @@ internal class AuthFragment : Fragment() {
     @Inject
     lateinit var navigator: Navigator
 
-    @Inject
-    lateinit var oAuthLauncher: OAuthLauncher
-
     private val viewModel: AuthViewModel by viewModels()
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,7 +65,7 @@ internal class AuthFragment : Fragment() {
             viewModel.events.collect { event ->
                 when (event) {
                     is AuthEvent.LaunchAuth -> {
-                        oAuthLauncher.launchAuth(requireContext())
+                        navigator.launchOAuth()
                     }
 
                     is AuthEvent.NavigateToPopular -> {

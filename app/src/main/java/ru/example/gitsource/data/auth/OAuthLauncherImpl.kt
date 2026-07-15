@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 internal class OAuthLauncherImpl @Inject constructor() : OAuthLauncher {
 
-    override fun launchAuth(context: Context) {
+    override fun launchOAuth(context: Context) {
         val customTabsIntent = CustomTabsIntent.Builder().build()
         val uri = buildUrl().toUri()
         customTabsIntent.launchUrl(context, uri)

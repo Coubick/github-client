@@ -49,6 +49,7 @@ internal class MainActivity : AppCompatActivity() {
         navigator.setOnBackPressedDispatcher(onBackPressedDispatcher)
         navigator.setActivity(this)
         navigator.setupBackPressedHandler()
+        navigator.setContext(this)
     }
 
     private fun checkLogin() {
