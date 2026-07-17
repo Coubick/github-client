@@ -27,7 +27,7 @@ internal class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initNavigator()
-        checkLogin()
+        checkLoginAndNavigateToPopularRepositories()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -52,7 +52,7 @@ internal class MainActivity : AppCompatActivity() {
         navigator.setContext(this)
     }
 
-    private fun checkLogin() {
+    private fun checkLoginAndNavigateToPopularRepositories() {
         lifecycleScope.launch {
             if (loginChecker.isLoggedIn()) {
                 navigator.execute(

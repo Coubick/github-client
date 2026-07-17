@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.example.gitsource.domain.AuthAction
 import ru.example.gitsource.domain.AuthEvent
 import ru.example.gitsource.domain.AuthRepository
@@ -20,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private companion object {
@@ -68,7 +70,10 @@ internal class AuthViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     _state.value = AuthUiState(isLoading = false)
-                    val resId = ErrorMapper.mapToStringMessage(error)
+                    val resId = withContext(Dispatchers.IO) {
+                         ErrorMapper.mapToStringMessage(error)
+                    }
+
                     _events.emit(AuthEvent.ShowError(resId))
                 }
             )
