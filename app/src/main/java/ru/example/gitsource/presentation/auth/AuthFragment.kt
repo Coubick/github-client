@@ -13,10 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import ru.example.gitsource.domain.AuthAction
-import ru.example.gitsource.domain.AuthEvent
+import ru.example.gitsource.domain.auth.AuthAction
+import ru.example.gitsource.domain.auth.AuthEvent
 import ru.example.gitsource.navigation.Command
 import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen

@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/popularRepositoriesFragment"
-        android:name="ru.example.gitsource.presentation.popular_repositories.PopularRepositoriesFragment"
+        android:name="ru.example.gitsource.presentation.popular.PopularRepositoriesFragment"
         android:label="PopularRepositoriesFragment" />
 
 </navigation>

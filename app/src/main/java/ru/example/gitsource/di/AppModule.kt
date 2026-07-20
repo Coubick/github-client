@@ -14,7 +14,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.example.gitsource.data.auth.OAuthLauncherImpl
-import ru.example.gitsource.data.auth.AuthRepositoryImpl
+import ru.example.gitsource.data.auth.AuthServiceImpl
 import ru.example.gitsource.data.auth.AuthTokenInterceptor
 import ru.example.gitsource.data.auth.TokenManager
 import ru.example.gitsource.data.local.DataConstants.PREFERENCES_NAME
@@ -24,8 +24,10 @@ import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
 import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
-import ru.example.gitsource.domain.AuthRepository
+import ru.example.gitsource.data.popular.RepositorySearchServiceImpl
+import ru.example.gitsource.domain.auth.AuthService
 import ru.example.gitsource.domain.OAuthLauncher
+import ru.example.gitsource.domain.popular.RepositorySearchService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -96,8 +98,8 @@ internal object AppModule {
         gitHubOAuthApi: GitHubOAuthApi,
         networkClient: NetworkClient,
         tokenManager: TokenManager
-    ): AuthRepository {
-        return AuthRepositoryImpl(
+    ): AuthService {
+        return AuthServiceImpl(
             gitHubOAuthApi = gitHubOAuthApi,
             networkClient = networkClient,
             tokenManager = tokenManager
@@ -115,5 +117,14 @@ internal object AppModule {
     fun provideOAuthLauncher(
     ): OAuthLauncher {
         return OAuthLauncherImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepositorySearchService(gitHubApi: GitHubApi, networkClient: NetworkClient): RepositorySearchService {
+        return RepositorySearchServiceImpl(
+            githubApi = gitHubApi,
+            networkClient = networkClient
+        )
     }
 }

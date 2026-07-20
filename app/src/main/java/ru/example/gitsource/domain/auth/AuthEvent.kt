@@ -1,4 +1,4 @@
-package ru.example.gitsource.domain
+package ru.example.gitsource.domain.auth
 
 internal sealed interface AuthEvent {
     data object LaunchAuth : AuthEvent
