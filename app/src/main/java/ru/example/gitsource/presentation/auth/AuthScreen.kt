@@ -26,12 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.AuthUiState
-import ru.example.gitsource.presentation.defaultSizes.CircularProgressIndicatorDefaults
-import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.borderWidthMedium
-import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.cornerShapeMedium
-import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.imageSizeMedium
-import ru.example.gitsource.presentation.defaultSizes.PictureDefaults.shadowElevationHuge
-import ru.example.gitsource.presentation.defaultSizes.SpaceDefaults
+import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
+import ru.example.gitsource.presentation.defaults.PictureDefaults.borderWidthMedium
+import ru.example.gitsource.presentation.defaults.PictureDefaults.cornerShapeMedium
+import ru.example.gitsource.presentation.defaults.PictureDefaults.imageSizeMedium
+import ru.example.gitsource.presentation.defaults.PictureDefaults.shadowElevationHuge
+import ru.example.gitsource.presentation.defaults.SpaceDefaults
 
 @Composable
 internal fun AuthScreen(

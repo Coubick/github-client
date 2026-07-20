@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.defaultSizes
+package ru.example.gitsource.presentation.defaults
 
 import androidx.compose.ui.unit.dp
 
