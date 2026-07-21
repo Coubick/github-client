@@ -13,7 +13,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.AuthAction
 import ru.example.gitsource.domain.AuthEvent
@@ -86,6 +85,16 @@ internal class AuthFragment : Fragment() {
                         ).show()
                     }
                 }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.state.value.isLoading) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.onAction(AuthAction.LoginCancelled)
             }
         }
     }

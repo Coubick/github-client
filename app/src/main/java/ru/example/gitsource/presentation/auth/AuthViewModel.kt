@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.domain.AuthAction
@@ -48,11 +49,15 @@ internal class AuthViewModel @Inject constructor(
     fun onAction(action: AuthAction) {
         when (action) {
             is AuthAction.LoginClicked -> onLoginClick()
+            is AuthAction.LoginCancelled -> onLoginCancelled()
         }
     }
 
     private fun onLoginClick() {
         viewModelScope.launch {
+            _state.update { authUiState ->
+                authUiState.copy(isLoading = true)
+            }
             _events.emit(AuthEvent.LaunchAuth)
         }
     }
@@ -70,13 +75,18 @@ internal class AuthViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     _state.value = AuthUiState(isLoading = false)
-                    val resId = withContext(Dispatchers.IO) {
-                         ErrorMapper.mapToStringMessage(error)
+                    withContext(Dispatchers.IO) {
+                        val resId = ErrorMapper.mapToStringMessage(error)
+                        _events.emit(AuthEvent.ShowError(resId))
                     }
-
-                    _events.emit(AuthEvent.ShowError(resId))
                 }
             )
+        }
+    }
+
+    private fun onLoginCancelled() {
+        _state.update { authUiState ->
+            authUiState.copy(isLoading = false)
         }
     }
 }
