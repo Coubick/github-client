@@ -70,11 +70,15 @@ internal class AuthViewModel @Inject constructor(
 
             result.fold(
                 onSuccess = {
-                    _state.value = AuthUiState(isLoading = false)
+                    _state.update { authUiState ->
+                        authUiState.copy(isLoading = false)
+                    }
                     _events.emit(AuthEvent.NavigateToPopular)
                 },
                 onFailure = { error ->
-                    _state.value = AuthUiState(isLoading = false)
+                    _state.update { authUiState ->
+                        authUiState.copy(isLoading = false)
+                    }
                     withContext(Dispatchers.IO) {
                         val resId = ErrorMapper.mapToStringMessage(error)
                         _events.emit(AuthEvent.ShowError(resId))
