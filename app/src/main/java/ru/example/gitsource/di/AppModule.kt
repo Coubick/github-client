@@ -114,13 +114,6 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideOAuthLauncher(
-    ): OAuthLauncher {
-        return OAuthLauncherImpl()
-    }
-
-    @Provides
-    @Singleton
     fun provideRepositorySearchService(gitHubApi: GitHubApi, networkClient: NetworkClient): RepositorySearchService {
         return RepositorySearchServiceImpl(
             githubApi = gitHubApi,

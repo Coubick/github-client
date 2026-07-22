@@ -88,4 +88,9 @@ internal class AuthFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onAction(AuthAction.LoginCancelled)
+    }
 }

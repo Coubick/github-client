@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.example.gitsource.R
-import ru.example.gitsource.domain.auth.AuthUiState
+import ru.example.gitsource.domain.AuthUiState
 import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.defaults.PictureDefaults.borderWidthMedium
 import ru.example.gitsource.presentation.defaults.PictureDefaults.cornerShapeMedium

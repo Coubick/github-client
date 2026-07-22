@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.domain.auth.AuthAction
@@ -47,35 +48,43 @@ internal class AuthViewModel @Inject constructor(
     fun onAction(action: AuthAction) {
         when (action) {
             is AuthAction.LoginClicked -> onLoginClick()
+            is AuthAction.LoginCancelled -> onLoginCancelled()
         }
     }
 
     private fun onLoginClick() {
         viewModelScope.launch {
+            _state.update { authUiState ->
+                authUiState.copy(isLoading = true)
+            }
             _events.emit(AuthEvent.LaunchAuth)
         }
     }
 
     private fun onGitHubAuthCode(code: String) {
         viewModelScope.launch {
-            _state.value = AuthUiState(isLoading = true)
 
             val result = repository.login(code = code)
 
             result.fold(
                 onSuccess = {
-                    _state.value = AuthUiState(isLoading = false)
                     _events.emit(AuthEvent.NavigateToPopular)
                 },
                 onFailure = { error ->
-                    _state.value = AuthUiState(isLoading = false)
-                    val resId = withContext(Dispatchers.IO) {
-                         ErrorMapper.mapToStringMessage(error)
+                    withContext(Dispatchers.IO) {
+                        val resId = ErrorMapper.mapToStringMessage(error)
+                        _events.emit(AuthEvent.ShowError(resId))
                     }
-
-                    _events.emit(AuthEvent.ShowError(resId))
                 }
             )
+        }
+    }
+
+    private fun onLoginCancelled() {
+        viewModelScope.launch {
+            _state.update { authUiState ->
+                authUiState.copy(isLoading = false)
+            }
         }
     }
 }

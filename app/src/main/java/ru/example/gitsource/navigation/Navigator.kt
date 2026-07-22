@@ -1,6 +1,5 @@
 package ru.example.gitsource.navigation
 
-import android.content.Context
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +18,6 @@ internal class Navigator @Inject constructor(
     private var navController: NavController? = null
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
     private var activity: AppCompatActivity? = null
-    private var context: Context? = null
-
-    private companion object {
-        const val CONTEXT_IS_NULL_MESSAGE = "Context is null"
-    }
 
     fun execute(command: Command) {
         when (command) {
@@ -81,12 +75,7 @@ internal class Navigator @Inject constructor(
         }
     }
 
-    fun setContext(context: Context) {
-        this.context = context
-    }
-
     fun launchOAuth() {
-        val ctx = requireNotNull(context) { CONTEXT_IS_NULL_MESSAGE }
-        oAuthLauncher.launchOAuth(ctx)
+        oAuthLauncher.launchOAuth()
     }
 }
