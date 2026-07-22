@@ -8,6 +8,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
 
 @Composable
@@ -22,4 +23,10 @@ internal fun StartScreen(modifier: Modifier = Modifier) {
             strokeWidth = CircularProgressIndicatorDefaults.smallStroke
         )
     }
+}
+
+@Composable
+@Preview
+fun PreviewStartScreen(){
+    StartScreen()
 }
