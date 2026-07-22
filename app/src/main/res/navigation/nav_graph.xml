@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/authFragment">
+    app:startDestination="@id/startFragment">
 
     <fragment
         android:id="@+id/authFragment"
@@ -21,5 +21,10 @@
         android:id="@+id/popularRepositoriesFragment"
         android:name="ru.example.gitsource.presentation.popular.PopularRepositoriesFragment"
         android:label="PopularRepositoriesFragment" />
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="ru.example.gitsource.presentation.start.StartFragment"
+        android:label="StartFragment" />
 
 </navigation>

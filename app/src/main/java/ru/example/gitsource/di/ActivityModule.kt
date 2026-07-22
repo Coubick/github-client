@@ -1,8 +1,7 @@
 package ru.example.gitsource.di
 
-import android.app.Activity
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
@@ -11,10 +10,8 @@ import ru.example.gitsource.domain.OAuthLauncher
 
 @Module
 @InstallIn(ActivityComponent::class)
-internal object ActivityModule {
-    @Provides
+internal abstract class ActivityModule {
+    @Binds
     @ActivityScoped
-    fun provideOAuthLauncher(activity: Activity): OAuthLauncher {
-        return OAuthLauncherImpl(activity)
-    }
+    abstract fun provideOAuthLauncher(impl: OAuthLauncherImpl): OAuthLauncher
 }

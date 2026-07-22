@@ -64,21 +64,14 @@ internal class AuthViewModel @Inject constructor(
 
     private fun onGitHubAuthCode(code: String) {
         viewModelScope.launch {
-            _state.value = AuthUiState(isLoading = true)
 
             val result = repository.login(code = code)
 
             result.fold(
                 onSuccess = {
-                    _state.update { authUiState ->
-                        authUiState.copy(isLoading = false)
-                    }
                     _events.emit(AuthEvent.NavigateToPopular)
                 },
                 onFailure = { error ->
-                    _state.update { authUiState ->
-                        authUiState.copy(isLoading = false)
-                    }
                     withContext(Dispatchers.IO) {
                         val resId = ErrorMapper.mapToStringMessage(error)
                         _events.emit(AuthEvent.ShowError(resId))
@@ -89,8 +82,10 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onLoginCancelled() {
-        _state.update { authUiState ->
-            authUiState.copy(isLoading = false)
+        viewModelScope.launch {
+            _state.update { authUiState ->
+                authUiState.copy(isLoading = false)
+            }
         }
     }
 }

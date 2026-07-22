@@ -91,11 +91,6 @@ internal class AuthFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        if (viewModel.state.value.isLoading) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewModel.onAction(AuthAction.LoginCancelled)
-            }
-        }
+        viewModel.onAction(AuthAction.LoginCancelled)
     }
 }
