@@ -4,14 +4,14 @@ import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
-import ru.example.gitsource.domain.auth.AuthService
+import ru.example.gitsource.domain.auth.AuthRepository
 import javax.inject.Inject
 
-internal class AuthServiceImpl @Inject constructor(
+internal class AuthRepositoryImpl @Inject constructor(
     private val gitHubOAuthApi: GitHubOAuthApi,
     private val networkClient: NetworkClient,
     private val tokenManager: TokenManager
-) : AuthService {
+) : AuthRepository {
 
     override suspend fun login(
         code: String

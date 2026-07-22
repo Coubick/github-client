@@ -15,13 +15,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.domain.auth.AuthAction
 import ru.example.gitsource.domain.auth.AuthEvent
-import ru.example.gitsource.domain.auth.AuthService
+import ru.example.gitsource.domain.auth.AuthRepository
 import ru.example.gitsource.domain.auth.AuthUiState
 import javax.inject.Inject
 
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
-    private val repository: AuthService,
+    private val repository: AuthRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
