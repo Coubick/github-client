@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.screens.default_sizes
+package ru.example.gitsource.presentation.defaults
 
 import androidx.compose.ui.unit.sp
 

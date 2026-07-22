@@ -1,8 +1,8 @@
 package ru.example.gitsource.data.auth
 
 import ru.example.gitsource.data.network.NetworkClient
+import ru.example.gitsource.data.network.NetworkConstants
 import ru.example.gitsource.data.network.NetworkError
-import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.domain.AuthRepository
 import javax.inject.Inject
@@ -14,14 +14,12 @@ internal class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(
-        clientId: String,
-        clientSecret: String,
         code: String
     ): Result<Unit> {
         return networkClient.execute {
             gitHubOAuthApi.getAccessToken(
-                clientId = clientId,
-                clientSecret = clientSecret,
+                clientId = NetworkConstants.GITHUB_CLIENT_ID,
+                clientSecret = NetworkConstants.GITHUB_CLIENT_SECRET,
                 code = code
             )
         }.fold(

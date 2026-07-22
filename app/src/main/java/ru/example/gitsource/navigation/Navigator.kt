@@ -4,16 +4,19 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
-import ru.example.gitsource.presentation.screens.toDestinationId
+import ru.example.gitsource.domain.OAuthLauncher
+import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
 @ActivityScoped
-internal class Navigator @Inject constructor() {
+internal class Navigator @Inject constructor(
+    private val oAuthLauncher: OAuthLauncher
+) {
     private var navController: NavController? = null
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
-
     private var activity: AppCompatActivity? = null
 
     fun execute(command: Command) {
@@ -25,6 +28,25 @@ internal class Navigator @Inject constructor() {
             is Command.NavigateToCommand -> {
                 val navigateTo = command.screen.toDestinationId()
                 navController?.navigate(navigateTo)
+            }
+
+            is Command.NavigateToAndClearCommand -> {
+                val destinationId = command.screen.toDestinationId()
+                val clearToId = command.clearToScreen.toDestinationId()
+
+                val options = navOptions {
+                    launchSingleTop = true
+                    popUpTo(clearToId) {
+                        inclusive = true
+                    }
+                }
+
+                navController
+                    ?.navigate(
+                        resId = destinationId,
+                        args = null,
+                        navOptions = options
+                    )
             }
         }
     }
@@ -44,11 +66,16 @@ internal class Navigator @Inject constructor() {
     fun setupBackPressedHandler() {
         onBackPressedDispatcher.addCallback(activity) {
             val currentDestination = navController?.currentDestination?.id
-            if (currentDestination == R.id.authFragment) {
+            val hasPreviousScreen = navController?.previousBackStackEntry != null
+            if (currentDestination == R.id.authFragment || hasPreviousScreen.not()) {
                 activity?.finish()
             } else {
                 navController?.popBackStack()
             }
         }
+    }
+
+    fun launchOAuth() {
+        oAuthLauncher.launchOAuth()
     }
 }

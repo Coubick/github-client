@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +8,18 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.android)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+localProperties.load(FileInputStream(localPropertiesFile))
+
+val githubClientIdDev = localProperties.getProperty("GITHUB_CLIENT_ID_DEV")
+val githubClientSecretDev = localProperties.getProperty("GITHUB_CLIENT_SECRET_DEV")
+
+val githubClientIdProd = localProperties.getProperty("GITHUB_CLIENT_ID_PROD")
+val githubClientSecretProd = localProperties.getProperty("GITHUB_CLIENT_SECRET_PROD")
+
 
 android {
     namespace = "ru.example.gitsource"
@@ -21,12 +36,23 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+
+            buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientIdDev\"")
+            buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecretDev\"")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "GITHUB_CLIENT_ID", "\"$githubClientIdProd\"")
+            buildConfigField("String", "GITHUB_CLIENT_SECRET", "\"$githubClientSecretProd\"")
+
         }
     }
 
@@ -36,6 +62,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 }
@@ -64,6 +91,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.browser)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

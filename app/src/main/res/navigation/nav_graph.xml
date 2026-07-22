@@ -2,16 +2,29 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/authFragment">
+    app:startDestination="@id/startFragment">
 
     <fragment
         android:id="@+id/authFragment"
-        android:name="ru.example.gitsource.presentation.fragments.AuthFragment"
-        android:label="AuthFragment" />
+        android:name="ru.example.gitsource.presentation.auth.AuthFragment"
+        android:label="AuthFragment">
+
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+
+        <deepLink app:uri="gitsource://oauth?code={code}&amp;" />
+    </fragment>
 
     <fragment
         android:id="@+id/popularRepositoriesFragment"
-        android:name="ru.example.gitsource.presentation.fragments.PopularRepositoriesFragment"
+        android:name="ru.example.gitsource.presentation.popular.PopularRepositoriesFragment"
         android:label="PopularRepositoriesFragment" />
+
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="ru.example.gitsource.presentation.start.StartFragment"
+        android:label="StartFragment" />
 
 </navigation>
