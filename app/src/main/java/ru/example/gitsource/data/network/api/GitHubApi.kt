@@ -17,7 +17,7 @@ internal interface GitHubApi {
     }
 
     @GET("search/repositories")
-    fun getRepositoriesList(
+    suspend fun getRepositoriesList(
         @Header(HEADER_ACCEPT) accept: String = HEADER_ACCEPT_VALUE,
         @Query("q") query: String = QUERY,
         @Query("sort") sort: String = SORT_BY_PARAMETER,

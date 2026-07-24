@@ -13,7 +13,6 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.example.gitsource.data.auth.OAuthLauncherImpl
 import ru.example.gitsource.data.auth.AuthRepositoryImpl
 import ru.example.gitsource.data.auth.AuthTokenInterceptor
 import ru.example.gitsource.data.auth.TokenManager
@@ -24,10 +23,9 @@ import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
 import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
-import ru.example.gitsource.data.popular.RepositorySearchServiceImpl
+import ru.example.gitsource.data.popular.RepositoryLoadServiceImpl
 import ru.example.gitsource.domain.auth.AuthRepository
-import ru.example.gitsource.domain.OAuthLauncher
-import ru.example.gitsource.domain.popular.RepositorySearchService
+import ru.example.gitsource.domain.popular.RepositoryLoadService
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -114,8 +112,8 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepositorySearchService(gitHubApi: GitHubApi, networkClient: NetworkClient): RepositorySearchService {
-        return RepositorySearchServiceImpl(
+    fun provideRepositorySearchService(gitHubApi: GitHubApi, networkClient: NetworkClient): RepositoryLoadService {
+        return RepositoryLoadServiceImpl(
             githubApi = gitHubApi,
             networkClient = networkClient
         )

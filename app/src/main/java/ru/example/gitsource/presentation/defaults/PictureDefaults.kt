@@ -3,8 +3,9 @@ package ru.example.gitsource.presentation.defaults
 import androidx.compose.ui.unit.dp
 
 internal object PictureDefaults {
-    val imageSizeMedium = 230.dp
-    val borderWidthMedium = 3.dp
-    val cornerShapeMedium = 16.dp
-    val shadowElevationHuge = 30.dp
+    val mediumImageSize = 230.dp
+    val mediumBorderSize = 3.dp
+    val mediumCornerShapeSize = 16.dp
+    val largeShadowElevation = 30.dp
+    val smallImageSize = 40.dp
 }

@@ -1,13 +1,16 @@
 package ru.example.gitsource.navigation
 
+import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
+import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
@@ -19,6 +22,24 @@ internal class Navigator @Inject constructor(
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
     private var activity: AppCompatActivity? = null
 
+    private companion object {
+        const val REPOSITORY_ID_KEY = "repositoryId"
+    }
+
+    private fun makeBundle(screen: Screen): Bundle? {
+        val bundle = when (val screen = screen) {
+            is Screen.RepositoryCardScreen -> {
+                bundleOf(REPOSITORY_ID_KEY to screen.repositoryCardId)
+            }
+
+            else -> {
+                null
+            }
+        }
+
+        return bundle
+    }
+
     fun execute(command: Command) {
         when (command) {
             Command.BackCommand -> {
@@ -27,7 +48,8 @@ internal class Navigator @Inject constructor(
 
             is Command.NavigateToCommand -> {
                 val navigateTo = command.screen.toDestinationId()
-                navController?.navigate(navigateTo)
+                val bundle = makeBundle(command.screen)
+                navController?.navigate(navigateTo, bundle)
             }
 
             is Command.NavigateToAndClearCommand -> {

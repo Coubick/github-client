@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import ru.example.gitsource.domain.popular.RepositoryEntity
 
 internal data class RepositoryDto(
+    @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
     @SerializedName("stargazers_count") val stargazersCount: Int,
     @SerializedName("language") val language: String,
@@ -13,8 +14,9 @@ internal data class RepositoryDto(
     @SerializedName("owner") val owner: Owner
 )
 
-internal fun RepositoryDto.toRepository(): RepositoryEntity {
+internal fun RepositoryDto.toRepositoryEntity(): RepositoryEntity {
     return RepositoryEntity(
+        id = id,
         name = name,
         starsCount = stargazersCount,
         language = language,

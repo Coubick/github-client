@@ -1,6 +1,7 @@
 package ru.example.gitsource.domain.popular
 
 internal data class RepositoryEntity (
+    val id: Int,
     val name: String,
     val starsCount: Int,
     val language: String?,
