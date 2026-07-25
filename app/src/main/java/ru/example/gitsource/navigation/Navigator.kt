@@ -23,13 +23,17 @@ internal class Navigator @Inject constructor(
     private var activity: AppCompatActivity? = null
 
     private companion object {
-        const val REPOSITORY_ID_KEY = "repositoryId"
+        const val REPOSITORY_NAME_KEY = "repositoryName"
+        const val REPOSITORY_OWNER_NAME = "repositoryOwnerName"
     }
 
     private fun makeBundle(screen: Screen): Bundle? {
         val bundle = when (val screen = screen) {
             is Screen.RepositoryCardScreen -> {
-                bundleOf(REPOSITORY_ID_KEY to screen.repositoryCardId)
+                bundleOf(
+                    REPOSITORY_NAME_KEY to screen.repositoryName,
+                    REPOSITORY_OWNER_NAME to screen.repositoryOwnerName
+                )
             }
 
             else -> {

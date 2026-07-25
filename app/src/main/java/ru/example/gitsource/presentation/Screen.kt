@@ -6,7 +6,10 @@ internal sealed interface Screen {
     data object AuthScreen : Screen
     data object PopularRepositoriesScreen : Screen
     data object StartScreen : Screen
-    data class RepositoryCardScreen(val repositoryCardId: Int) : Screen
+    data class RepositoryCardScreen(
+        val repositoryName: String,
+        val repositoryOwnerName: String
+    ) : Screen
     data object SearchRepositoryScreen : Screen
 
 }

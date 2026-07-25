@@ -33,8 +33,12 @@
         android:label="RepositoryDetailsFragment">
 
         <argument
-            android:name="repositoryId"
-            app:argType="integer" />
+            android:name="repositoryName"
+            app:argType="string" />
+
+        <argument
+            android:name="repositoryOwnerName"
+            app:argType="string" />
     </fragment>
 
     <fragment

@@ -53,7 +53,12 @@ internal class PopularRepositoriesFragment : Fragment() {
                 when (event) {
                     is PopularRepositoriesEvent.NavigateToRepositoryCard -> {
                         val command =
-                            Command.NavigateToCommand(Screen.RepositoryCardScreen(event.repositoryId))
+                            Command.NavigateToCommand(
+                                Screen.RepositoryCardScreen(
+                                    repositoryName = event.repositoryName,
+                                    repositoryOwnerName = event.repositoryName
+                                )
+                            )
                         navigator.execute(command)
                     }
 

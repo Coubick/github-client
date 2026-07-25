@@ -41,7 +41,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     fun onAction(action: PopularRepositoriesAction) {
         when (action) {
-            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(action.repositoryId)
+            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(
+                repositoryName = action.repositoryName,
+                repositoryOwnerName = action.repositoryOwnerName
+            )
             is PopularRepositoriesAction.SearchRepositoriesClicked -> onSearchRepositoryClicked()
             is PopularRepositoriesAction.LogoutClicked -> onLogoutClicked()
             is PopularRepositoriesAction.LogoutConfirmed -> onLogoutConfirmed()
@@ -50,9 +53,14 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
 
-    private fun onRepositoryCardClicked(repositoryId: Int) {
+    private fun onRepositoryCardClicked(repositoryName: String, repositoryOwnerName: String) {
         viewModelScope.launch {
-            _event.emit(PopularRepositoriesEvent.NavigateToRepositoryCard(repositoryId))
+            _event.emit(
+                PopularRepositoriesEvent.NavigateToRepositoryCard(
+                    repositoryName = repositoryName,
+                    repositoryOwnerName = repositoryOwnerName
+                )
+            )
         }
     }
 
