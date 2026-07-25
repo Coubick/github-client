@@ -50,7 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.PopularRepositoriesAction
 import ru.example.gitsource.domain.popular.PopularRepositoriesUiState
-import ru.example.gitsource.domain.popular.RepositoryEntity
+import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.defaults.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.defaults.GraphicElementsDefaults.dividerThickness
@@ -348,15 +348,12 @@ fun PreviewPopularRepoScreen() {
                 onAction = {},
                 state = PopularRepositoriesUiState(
                     repositoriesList = listOf(
-                        RepositoryEntity(
+                        RepositoryCardEntity(
                             id = 1,
                             name = "simple-project-repo",
                             starsCount = 345,
                             language = "assembly",
                             authorName = "tourist",
-                            description = "First test repository",
-                            watchersCount = 123,
-                            openIssuesCount = 100
                         )
                     )
                 )
