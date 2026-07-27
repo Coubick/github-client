@@ -73,6 +73,7 @@ internal fun PopularRepositoriesScreen(
     state: PopularRepositoriesUiState
 ) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             Column {
                 CenterAlignedTopAppBar(
@@ -145,7 +146,7 @@ internal fun PopularRepositoriesScreen(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = modifier
+            modifier = Modifier
                 .padding(innerPadding),
             state = rememberLazyListState(),
         ) {
@@ -160,7 +161,10 @@ internal fun PopularRepositoriesScreen(
                     onRepositoryCardClicked = {
                         onAction(
                             PopularRepositoriesAction
-                                .RepositoryCardClicked(repository.id)
+                                .RepositoryCardClicked(
+                                    repositoryName = repository.name,
+                                    repositoryOwnerName = repository.authorName
+                                )
                         )
                     },
                 )
