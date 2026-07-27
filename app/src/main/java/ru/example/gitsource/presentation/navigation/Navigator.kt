@@ -1,4 +1,4 @@
-package ru.example.gitsource.navigation
+package ru.example.gitsource.presentation.navigation
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
@@ -10,6 +10,7 @@ import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
+import ru.example.gitsource.presentation.Action
 import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
@@ -101,7 +102,10 @@ internal class Navigator @Inject constructor(
         }
     }
 
-    fun launchOAuth() {
-        oAuthLauncher.launchOAuth()
+    fun executeAction(action: Action) {
+        when (action) {
+            is Action.LaunchOAuth -> oAuthLauncher.launchOAuth()
+
+        }
     }
 }

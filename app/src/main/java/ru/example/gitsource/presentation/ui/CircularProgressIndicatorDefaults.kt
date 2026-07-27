@@ -1,4 +1,4 @@
-package ru.example.gitsource.presentation.defaults
+package ru.example.gitsource.presentation.ui
 
 import androidx.compose.ui.unit.dp
 

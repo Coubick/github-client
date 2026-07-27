@@ -14,10 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.example.gitsource.domain.auth.AuthAction
-import ru.example.gitsource.domain.auth.AuthEvent
 import ru.example.gitsource.domain.auth.AuthRepository
-import ru.example.gitsource.domain.auth.AuthUiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +37,9 @@ internal class AuthViewModel @Inject constructor(
         savedStateHandle.remove<String>(KEY_AUTH_CODE)
     }
 
-    private val _state = MutableStateFlow(AuthUiState())
+    private val _state = MutableStateFlow(AuthUiState(
+        isLoading = false
+    ))
     val state: StateFlow<AuthUiState> = _state.asStateFlow()
     private val _events = MutableSharedFlow<AuthEvent>()
     val events: SharedFlow<AuthEvent> = _events.asSharedFlow()

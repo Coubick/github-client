@@ -15,9 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.auth.AuthRepository
-import ru.example.gitsource.domain.popular.PopularRepositoriesAction
-import ru.example.gitsource.domain.popular.PopularRepositoriesEvent
-import ru.example.gitsource.domain.popular.PopularRepositoriesUiState
+import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.domain.popular.RepositoryLoadService
 import ru.example.gitsource.presentation.auth.ErrorMapper
 import javax.inject.Inject
@@ -27,7 +25,13 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     private val repositoryLoadService: RepositoryLoadService,
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(PopularRepositoriesUiState())
+    private val _state = MutableStateFlow(
+        PopularRepositoriesUiState(
+            isLoading = false,
+            repositoriesList = emptyList(),
+            isLogoutDialogVisible = false
+        )
+    )
     private val _event = MutableSharedFlow<PopularRepositoriesEvent>()
 
     val state: StateFlow<PopularRepositoriesUiState> = _state.asStateFlow()
@@ -41,10 +45,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     fun onAction(action: PopularRepositoriesAction) {
         when (action) {
-            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(
-                repositoryName = action.repositoryName,
-                repositoryOwnerName = action.repositoryOwnerName
-            )
+            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(action.repository)
             is PopularRepositoriesAction.SearchRepositoriesClicked -> onSearchRepositoryClicked()
             is PopularRepositoriesAction.LogoutClicked -> onLogoutClicked()
             is PopularRepositoriesAction.LogoutConfirmed -> onLogoutConfirmed()
@@ -53,13 +54,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
 
-    private fun onRepositoryCardClicked(repositoryName: String, repositoryOwnerName: String) {
+    private fun onRepositoryCardClicked(repository: RepositoryCardEntity) {
         viewModelScope.launch {
             _event.emit(
-                PopularRepositoriesEvent.NavigateToRepositoryCard(
-                    repositoryName = repositoryName,
-                    repositoryOwnerName = repositoryOwnerName
-                )
+                PopularRepositoriesEvent.NavigateToRepositoryCard(repository)
             )
         }
     }
@@ -81,9 +79,9 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun loadRepositories() {
+        _state.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(isLoading = true) }
-            val result = repositoryLoadService.loadRepositories()
+            val result = repositoryLoadService.getRepositories()
             result.fold(
                 onSuccess = {
                     val entityRepositories = result.getOrNull()

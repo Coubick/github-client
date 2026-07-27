@@ -8,11 +8,12 @@ import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.domain.popular.RepositoryLoadService
 import javax.inject.Inject
 
-internal class RepositoryLoadServiceImpl @Inject constructor(
+internal class PopularRepositoriesRepositoryImpl @Inject constructor(
     private val githubApi: GitHubApi,
     private val networkClient: NetworkClient
 ) : RepositoryLoadService {
-    override suspend fun loadRepositories(): Result<List<RepositoryCardEntity>> {
+
+    override suspend fun getRepositories(): Result<List<RepositoryCardEntity>> {
         return networkClient.execute {
             githubApi.getRepositoriesList()
         }.fold(

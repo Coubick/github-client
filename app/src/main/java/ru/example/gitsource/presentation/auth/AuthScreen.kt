@@ -25,13 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.example.gitsource.R
-import ru.example.gitsource.domain.auth.AuthUiState
-import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
-import ru.example.gitsource.presentation.defaults.PictureDefaults.mediumBorderSize
-import ru.example.gitsource.presentation.defaults.PictureDefaults.mediumCornerShapeSize
-import ru.example.gitsource.presentation.defaults.PictureDefaults.mediumImageSize
-import ru.example.gitsource.presentation.defaults.PictureDefaults.largeShadowElevation
-import ru.example.gitsource.presentation.defaults.SpaceDefaults
+import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumBorderSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumCornerShapeSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.largeShadowElevation
+import ru.example.gitsource.presentation.ui.SpaceDefaults
 
 @Composable
 internal fun AuthScreen(

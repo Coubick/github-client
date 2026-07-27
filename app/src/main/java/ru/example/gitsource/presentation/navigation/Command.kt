@@ -1,4 +1,4 @@
-package ru.example.gitsource.navigation
+package ru.example.gitsource.presentation.navigation
 
 import ru.example.gitsource.presentation.Screen
 

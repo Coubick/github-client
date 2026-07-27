@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.LoginStatusChecker
-import ru.example.gitsource.navigation.Command
-import ru.example.gitsource.navigation.Navigator
+import ru.example.gitsource.presentation.navigation.Command
+import ru.example.gitsource.presentation.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
 import javax.inject.Inject
 

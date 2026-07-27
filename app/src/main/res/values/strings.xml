@@ -2,7 +2,7 @@
     <string name="app_name">Git Source</string>
     <string name="title">Git Source</string>
     <string name="login">Войти</string>
-    <string name="popular_repo_title">20 популярных репозиториев</string>
+    <string name="popular_repo_title">Популярные репозитории</string>
     <string name="back_button">Назад</string>
 
     <string name="error_unauthorized">Неверный код авторизации</string>

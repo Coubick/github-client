@@ -4,13 +4,11 @@ package ru.example.gitsource.presentation.popular
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,18 +23,18 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,22 +46,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
-import ru.example.gitsource.domain.popular.PopularRepositoriesAction
-import ru.example.gitsource.domain.popular.PopularRepositoriesUiState
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
-import ru.example.gitsource.presentation.defaults.GraphicElementsDefaults.cardHeight
-import ru.example.gitsource.presentation.defaults.GraphicElementsDefaults.dividerThickness
-import ru.example.gitsource.presentation.defaults.GraphicElementsDefaults.mediumIconSize
-import ru.example.gitsource.presentation.defaults.PictureDefaults.smallImageSize
-import ru.example.gitsource.presentation.defaults.SpaceDefaults.mediumSpaceSize
-import ru.example.gitsource.presentation.defaults.SpaceDefaults.smallSpaceSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.largeFontSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.minFontSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.smallestFontSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.smallFontSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.smallStepFontSize
-import ru.example.gitsource.presentation.defaults.TextFieldDefaults.mediumStepFontSize
+import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
+import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
+import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
+import ru.example.gitsource.presentation.ui.PictureDefaults.smallImageSize
+import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
+import ru.example.gitsource.presentation.ui.SpaceDefaults.smallSpaceSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.largeFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumStepFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallStepFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallestFontSize
 import ru.example.gitsource.theme.GitSourceTheme
 
 @Composable
@@ -76,14 +71,41 @@ internal fun PopularRepositoriesScreen(
         modifier = modifier,
         topBar = {
             Column {
-                CenterAlignedTopAppBar(
+                TopAppBar(
                     colors = topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.tertiary
                     ),
                     title = {
-                        Text(
+                        BasicText(
+                            maxLines = 1,
+                            autoSize = TextAutoSize
+                                .StepBased(
+                                    minFontSize = smallFontSize,
+                                    maxFontSize = mediumFontSize,
+                                    stepSize = mediumStepFontSize
+                                ),
                             text = stringResource(R.string.popular_repo_title),
                         )
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = { onAction(PopularRepositoriesAction.SearchRepositoriesClicked) }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.outline_search_24),
+                                contentDescription = stringResource(R.string.search_description),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
+                        IconButton(
+                            onClick = { onAction(PopularRepositoriesAction.LogoutClicked) }
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.outline_logout_24),
+                                contentDescription = stringResource(R.string.logout_descrpiption),
+                                tint = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
                     }
                 )
                 HorizontalDivider(
@@ -93,57 +115,6 @@ internal fun PopularRepositoriesScreen(
             }
         },
 
-        bottomBar = {
-            Column {
-                HorizontalDivider(
-                    thickness = dividerThickness,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                Surface(
-                    color = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.onBackground
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .clickable(
-                                    onClick = { onAction(PopularRepositoriesAction.SearchRepositoriesClicked) }
-                                )
-                                .size(mediumIconSize)
-                                .weight(1f),
-                            painter = painterResource(R.drawable.outline_search_24),
-                            contentDescription = stringResource(R.string.search_description),
-
-                            )
-
-                        VerticalDivider(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .padding(vertical = smallSpaceSize),
-                            thickness = dividerThickness,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-
-                        Icon(
-                            modifier = Modifier
-                                .clickable(
-                                    onClick = { onAction(PopularRepositoriesAction.LogoutClicked) }
-                                )
-                                .size(mediumIconSize)
-                                .weight(1f),
-                            painter = painterResource(R.drawable.outline_logout_24),
-                            contentDescription = stringResource(R.string.logout_descrpiption),
-                        )
-
-                    }
-                }
-            }
-        }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -160,11 +131,7 @@ internal fun PopularRepositoriesScreen(
                     language = repository.language,
                     onRepositoryCardClicked = {
                         onAction(
-                            PopularRepositoriesAction
-                                .RepositoryCardClicked(
-                                    repositoryName = repository.name,
-                                    repositoryOwnerName = repository.authorName
-                                )
+                            PopularRepositoriesAction.RepositoryCardClicked(repository)
                         )
                     },
                 )
@@ -241,7 +208,7 @@ internal fun RepositoryCard(
                 text = name,
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = minFontSize,
+                    minFontSize = smallFontSize,
                     maxFontSize = largeFontSize,
                     stepSize = mediumStepFontSize,
                 ),
@@ -261,14 +228,14 @@ internal fun RepositoryCard(
                     Icon(
                         painter = painterResource(R.drawable.baseline_star_24),
                         contentDescription = stringResource(R.string.stars_description),
-                        tint = Color.Yellow
+                        tint = Color(0xFFFFD700)
                     )
 
                     BasicText(
                         text = starsCount.toString(),
                         autoSize = TextAutoSize.StepBased(
                             minFontSize = smallestFontSize,
-                            maxFontSize = smallFontSize,
+                            maxFontSize = mediumFontSize,
                             stepSize = smallStepFontSize
                         ),
                         maxLines = 1,
@@ -287,7 +254,7 @@ internal fun RepositoryCard(
                     autoSize = TextAutoSize.StepBased(
                         minFontSize = smallestFontSize,
                         stepSize = smallStepFontSize,
-                        maxFontSize = smallFontSize,
+                        maxFontSize = mediumFontSize,
                     ),
                     style = TextStyle(
                         color = MaterialTheme.colorScheme.tertiary
@@ -359,7 +326,9 @@ fun PreviewPopularRepoScreen() {
                             language = "assembly",
                             authorName = "tourist",
                         )
-                    )
+                    ),
+                    isLoading = false,
+                    isLogoutDialogVisible = false
                 )
             )
         }
