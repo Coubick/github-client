@@ -85,6 +85,9 @@ internal fun PopularRepositoriesScreen(
                                     stepSize = mediumStepFontSize
                                 ),
                             text = stringResource(R.string.popular_repo_title),
+                            style = TextStyle(
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
                         )
                     },
                     actions = {
