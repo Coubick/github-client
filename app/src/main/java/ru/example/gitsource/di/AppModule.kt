@@ -23,9 +23,9 @@ import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
 import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
-import ru.example.gitsource.data.popular.PopularRepositoriesRepositoryImpl
+import ru.example.gitsource.data.popular.RepoRepositoryImpl
 import ru.example.gitsource.domain.auth.AuthRepository
-import ru.example.gitsource.domain.popular.RepositoryLoadService
+import ru.example.gitsource.domain.popular.RepoRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -112,8 +112,8 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideRepositorySearchService(gitHubApi: GitHubApi, networkClient: NetworkClient): RepositoryLoadService {
-        return PopularRepositoriesRepositoryImpl(
+    fun provideRepoRepository(gitHubApi: GitHubApi, networkClient: NetworkClient): RepoRepository {
+        return RepoRepositoryImpl(
             githubApi = gitHubApi,
             networkClient = networkClient
         )

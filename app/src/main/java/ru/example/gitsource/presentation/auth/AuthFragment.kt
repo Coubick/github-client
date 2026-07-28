@@ -14,10 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.navigation.Command
 import ru.example.gitsource.presentation.navigation.Navigator
-import ru.example.gitsource.presentation.Action
-import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.theme.GitSourceTheme
 import javax.inject.Inject
 
@@ -68,7 +67,7 @@ internal class AuthFragment : Fragment() {
             viewModel.events.collect { event ->
                 when (event) {
                     is AuthEvent.LaunchAuth -> {
-                        navigator.executeAction(Action.LaunchOAuth)
+                        navigator.execute(Command.NavigateToCustomTabsCommand)
                     }
 
                     is AuthEvent.NavigateToPopular -> {

@@ -4,14 +4,14 @@ import ru.example.gitsource.data.dto.toRepositoryEntity
 import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.data.network.api.GitHubApi
+import ru.example.gitsource.domain.popular.RepoRepository
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.domain.popular.RepositoryLoadService
 import javax.inject.Inject
 
-internal class PopularRepositoriesRepositoryImpl @Inject constructor(
+internal class RepoRepositoryImpl @Inject constructor(
     private val githubApi: GitHubApi,
     private val networkClient: NetworkClient
-) : RepositoryLoadService {
+) : RepoRepository {
 
     override suspend fun getRepositories(): Result<List<RepositoryCardEntity>> {
         return networkClient.execute {

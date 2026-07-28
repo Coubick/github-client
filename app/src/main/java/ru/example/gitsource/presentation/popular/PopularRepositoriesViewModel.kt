@@ -15,14 +15,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.auth.AuthRepository
+import ru.example.gitsource.domain.popular.RepoRepository
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.domain.popular.RepositoryLoadService
 import ru.example.gitsource.presentation.auth.ErrorMapper
 import javax.inject.Inject
 
 @HiltViewModel
 internal class PopularRepositoriesViewModel @Inject constructor(
-    private val repositoryLoadService: RepositoryLoadService,
+    private val repositoryLoadService: RepoRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(
@@ -45,7 +45,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     fun onAction(action: PopularRepositoriesAction) {
         when (action) {
-            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(action.repository)
+            is PopularRepositoriesAction.RepositoryClicked -> onRepositoryClicked(action.repository)
             is PopularRepositoriesAction.SearchRepositoriesClicked -> onSearchRepositoryClicked()
             is PopularRepositoriesAction.LogoutClicked -> onLogoutClicked()
             is PopularRepositoriesAction.LogoutConfirmed -> onLogoutConfirmed()
@@ -54,7 +54,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
 
-    private fun onRepositoryCardClicked(repository: RepositoryCardEntity) {
+    private fun onRepositoryClicked(repository: RepositoryCardEntity) {
         viewModelScope.launch {
             _event.emit(
                 PopularRepositoriesEvent.NavigateToRepositoryCard(repository)

@@ -54,9 +54,9 @@ import ru.example.gitsource.presentation.ui.PictureDefaults.smallImageSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.smallSpaceSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.largeFontSize
+import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumStepFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallFontSize
-import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallStepFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallestFontSize
 import ru.example.gitsource.theme.GitSourceTheme
@@ -134,7 +134,7 @@ internal fun PopularRepositoriesScreen(
                     language = repository.language,
                     onRepositoryCardClicked = {
                         onAction(
-                            PopularRepositoriesAction.RepositoryCardClicked(repository)
+                            PopularRepositoriesAction.RepositoryClicked(repository)
                         )
                     },
                 )

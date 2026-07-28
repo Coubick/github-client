@@ -10,7 +10,6 @@ import androidx.navigation.navOptions
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
-import ru.example.gitsource.presentation.Action
 import ru.example.gitsource.presentation.Screen
 import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
@@ -75,6 +74,10 @@ internal class Navigator @Inject constructor(
                         navOptions = options
                     )
             }
+
+            is Command.NavigateToCustomTabsCommand -> {
+                oAuthLauncher.launchOAuth()
+            }
         }
     }
 
@@ -99,13 +102,6 @@ internal class Navigator @Inject constructor(
             } else {
                 navController?.popBackStack()
             }
-        }
-    }
-
-    fun executeAction(action: Action) {
-        when (action) {
-            is Action.LaunchOAuth -> oAuthLauncher.launchOAuth()
-
         }
     }
 }

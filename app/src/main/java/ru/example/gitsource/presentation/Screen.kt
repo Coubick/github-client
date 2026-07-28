@@ -14,10 +14,6 @@ internal sealed interface Screen {
 
 }
 
-internal sealed interface Action{
-    data object LaunchOAuth : Action
-}
-
 internal fun Screen.toDestinationId(): Int {
     return when (this) {
         is Screen.AuthScreen -> R.id.authFragment
