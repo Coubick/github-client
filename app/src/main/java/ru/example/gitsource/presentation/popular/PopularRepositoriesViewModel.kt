@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class PopularRepositoriesViewModel @Inject constructor(
-    private val repositoryLoadService: RepoRepository,
+    private val repoRepository: RepoRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(
@@ -38,9 +38,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     val event: SharedFlow<PopularRepositoriesEvent> = _event.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            loadRepositories()
-        }
+        loadRepositories()
     }
 
     fun onAction(action: PopularRepositoriesAction) {
@@ -63,12 +61,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun onLogoutClicked() {
-        viewModelScope.launch {
-            _state.update { popularRepositoriesUiState ->
-                popularRepositoriesUiState.copy(
-                    isLogoutDialogVisible = true
-                )
-            }
+        _state.update { popularRepositoriesUiState ->
+            popularRepositoriesUiState.copy(
+                isLogoutDialogVisible = true
+            )
         }
     }
 
@@ -80,8 +76,8 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     private fun loadRepositories() {
         _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = repositoryLoadService.getRepositories()
+        viewModelScope.launch {
+            val result = repoRepository.getRepositories()
             result.fold(
                 onSuccess = {
                     val entityRepositories = result.getOrNull()
@@ -94,24 +90,27 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                         }
                     } else {
                         _state.update { it.copy(isLoading = false) }
-                        val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                        withContext(Dispatchers.IO) {
+                            val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
+                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                        }
                     }
                 },
 
                 onFailure = { error ->
                     _state.update { it.copy(isLoading = false) }
-                    val resId = ErrorMapper.mapToStringMessage(error)
-                    _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    withContext(Dispatchers.IO) {
+                        val resId = ErrorMapper.mapToStringMessage(error)
+                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    }
                 }
             )
         }
     }
 
     private fun onLogoutConfirmed() {
+        _state.update { it.copy(isLogoutDialogVisible = false) }
         viewModelScope.launch {
-            _state.update { it.copy(isLogoutDialogVisible = false) }
-
             val result = authRepository.logout()
             result.fold(
                 onSuccess = {

@@ -66,10 +66,6 @@ internal class AuthFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is AuthEvent.LaunchAuth -> {
-                        navigator.execute(Command.NavigateToCustomTabsCommand)
-                    }
-
                     is AuthEvent.NavigateToPopular -> {
                         val command = Command.NavigateToCommand(Screen.PopularRepositoriesScreen)
                         navigator.execute(command)
@@ -81,6 +77,11 @@ internal class AuthFragment : Fragment() {
                             event.errorMessageResId,
                             Toast.LENGTH_LONG
                         ).show()
+                    }
+
+                    is AuthEvent.NavigateToCustomTabs -> {
+                        val command = Command.NavigateToCommand(Screen.OAuthScreen)
+                        navigator.execute(command)
                     }
                 }
             }

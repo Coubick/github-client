@@ -37,9 +37,11 @@ internal class AuthViewModel @Inject constructor(
         savedStateHandle.remove<String>(KEY_AUTH_CODE)
     }
 
-    private val _state = MutableStateFlow(AuthUiState(
-        isLoading = false
-    ))
+    private val _state = MutableStateFlow(
+        AuthUiState(
+            isLoading = false
+        )
+    )
     val state: StateFlow<AuthUiState> = _state.asStateFlow()
     private val _events = MutableSharedFlow<AuthEvent>()
     val events: SharedFlow<AuthEvent> = _events.asSharedFlow()
@@ -52,11 +54,12 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onLoginClick() {
+        _state.update { authUiState ->
+            authUiState.copy(isLoading = true)
+        }
+
         viewModelScope.launch {
-            _state.update { authUiState ->
-                authUiState.copy(isLoading = true)
-            }
-            _events.emit(AuthEvent.LaunchAuth)
+            _events.emit(AuthEvent.NavigateToCustomTabs)
         }
     }
 
@@ -80,10 +83,8 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onLoginCancelled() {
-        viewModelScope.launch {
-            _state.update { authUiState ->
-                authUiState.copy(isLoading = false)
-            }
+        _state.update { authUiState ->
+            authUiState.copy(isLoading = false)
         }
     }
 }

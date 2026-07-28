@@ -1,5 +1,7 @@
 package ru.example.gitsource.data.popular
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.dto.toRepositoryEntity
 import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkError
@@ -14,22 +16,24 @@ internal class RepoRepositoryImpl @Inject constructor(
 ) : RepoRepository {
 
     override suspend fun getRepositories(): Result<List<RepositoryCardEntity>> {
-        return networkClient.execute {
-            githubApi.getRepositoriesList()
-        }.fold(
-            onSuccess = { responseResult ->
-                val repositoriesDtoList = responseResult.items
-                if (repositoriesDtoList.isEmpty()) {
-                    Result.failure(NetworkError.EmptyResponseBody)
-                } else {
-                    val repositoriesEntityList =
-                        repositoriesDtoList.map { repo -> repo.toRepositoryEntity() }
-                    Result.success(repositoriesEntityList)
+        return withContext(Dispatchers.IO) {
+            networkClient.execute {
+                githubApi.getRepositoriesList()
+            }.fold(
+                onSuccess = { responseResult ->
+                    val repositoriesDtoList = responseResult.items
+                    if (repositoriesDtoList.isEmpty()) {
+                        Result.failure(NetworkError.EmptyResponseBody)
+                    } else {
+                        val repositoriesEntityList =
+                            repositoriesDtoList.map { repo -> repo.toRepositoryEntity() }
+                        Result.success(repositoriesEntityList)
+                    }
+                },
+                onFailure = { error ->
+                    Result.failure(error)
                 }
-            },
-            onFailure = { error ->
-                Result.failure(error)
-            }
-        )
+            )
+        }
     }
 }
