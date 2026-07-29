@@ -79,7 +79,7 @@ internal class AuthFragment : Fragment() {
                         ).show()
                     }
 
-                    is AuthEvent.NavigateToCustomTabs -> {
+                    is AuthEvent.NavigateToOAuthScreen -> {
                         val command = Command.NavigateToCommand(Screen.OAuthScreen)
                         navigator.execute(command)
                     }

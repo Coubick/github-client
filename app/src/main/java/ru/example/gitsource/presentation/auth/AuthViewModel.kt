@@ -59,7 +59,7 @@ internal class AuthViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _events.emit(AuthEvent.NavigateToCustomTabs)
+            _events.emit(AuthEvent.NavigateToOAuthScreen)
         }
     }
 
