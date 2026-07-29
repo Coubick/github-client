@@ -1,4 +1,4 @@
-package ru.example.gitsource.domain.auth
+package ru.example.gitsource.presentation.auth
 
 internal sealed interface AuthAction {
     data object LoginClicked : AuthAction

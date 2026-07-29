@@ -2,24 +2,34 @@ package ru.example.gitsource.presentation
 
 import ru.example.gitsource.R
 
-internal sealed interface Screen {
-    data object AuthScreen : Screen
-    data object PopularRepositoriesScreen : Screen
-    data object StartScreen : Screen
-    data class RepositoryCardScreen(
+sealed interface Screen {
+
+    sealed interface Internal : Screen {
+        val destinationId: Int
+    }
+
+    data object StartScreen : Internal {
+        override val destinationId: Int = R.id.startFragment
+    }
+
+    data object AuthScreen : Internal {
+        override val destinationId: Int = R.id.authFragment
+    }
+
+    data object PopularRepositoriesScreen : Internal {
+        override val destinationId: Int = R.id.popularRepositoriesFragment
+    }
+
+    data class RepositoryDetailsScreen(
         val repositoryName: String,
         val repositoryOwnerName: String
-    ) : Screen
-    data object SearchRepositoryScreen : Screen
-
-}
-
-internal fun Screen.toDestinationId(): Int {
-    return when (this) {
-        is Screen.AuthScreen -> R.id.authFragment
-        is Screen.PopularRepositoriesScreen -> R.id.popularRepositoriesFragment
-        is Screen.StartScreen -> R.id.startFragment
-        is Screen.RepositoryCardScreen -> R.id.repositoryDetailsFragment
-        is Screen.SearchRepositoryScreen -> R.id.searchRepositoryFragment
+    ) : Internal {
+        override val destinationId: Int = R.id.repositoryDetailsFragment
     }
+
+    data object SearchRepositoryScreen : Internal {
+        override val destinationId: Int = R.id.searchRepositoryFragment
+    }
+
+    data object OAuthScreen : Screen
 }

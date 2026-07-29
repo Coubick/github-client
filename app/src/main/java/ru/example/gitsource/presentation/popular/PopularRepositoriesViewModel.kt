@@ -15,36 +15,35 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.auth.AuthRepository
-import ru.example.gitsource.domain.popular.PopularRepositoriesAction
-import ru.example.gitsource.domain.popular.PopularRepositoriesEvent
-import ru.example.gitsource.domain.popular.PopularRepositoriesUiState
-import ru.example.gitsource.domain.popular.RepositoryLoadService
+import ru.example.gitsource.domain.popular.RepoRepository
+import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.auth.ErrorMapper
 import javax.inject.Inject
 
 @HiltViewModel
 internal class PopularRepositoriesViewModel @Inject constructor(
-    private val repositoryLoadService: RepositoryLoadService,
+    private val repoRepository: RepoRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(PopularRepositoriesUiState())
+    private val _state = MutableStateFlow(
+        PopularRepositoriesUiState(
+            isLoading = false,
+            repositoriesList = emptyList(),
+            isLogoutDialogVisible = false
+        )
+    )
     private val _event = MutableSharedFlow<PopularRepositoriesEvent>()
 
     val state: StateFlow<PopularRepositoriesUiState> = _state.asStateFlow()
     val event: SharedFlow<PopularRepositoriesEvent> = _event.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            loadRepositories()
-        }
+        loadRepositories()
     }
 
     fun onAction(action: PopularRepositoriesAction) {
         when (action) {
-            is PopularRepositoriesAction.RepositoryCardClicked -> onRepositoryCardClicked(
-                repositoryName = action.repositoryName,
-                repositoryOwnerName = action.repositoryOwnerName
-            )
+            is PopularRepositoriesAction.RepositoryClicked -> onRepositoryClicked(action.repository)
             is PopularRepositoriesAction.SearchRepositoriesClicked -> onSearchRepositoryClicked()
             is PopularRepositoriesAction.LogoutClicked -> onLogoutClicked()
             is PopularRepositoriesAction.LogoutConfirmed -> onLogoutConfirmed()
@@ -53,24 +52,19 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
 
-    private fun onRepositoryCardClicked(repositoryName: String, repositoryOwnerName: String) {
+    private fun onRepositoryClicked(repository: RepositoryCardEntity) {
         viewModelScope.launch {
             _event.emit(
-                PopularRepositoriesEvent.NavigateToRepositoryCard(
-                    repositoryName = repositoryName,
-                    repositoryOwnerName = repositoryOwnerName
-                )
+                PopularRepositoriesEvent.NavigateToRepositoryCard(repository)
             )
         }
     }
 
     private fun onLogoutClicked() {
-        viewModelScope.launch {
-            _state.update { popularRepositoriesUiState ->
-                popularRepositoriesUiState.copy(
-                    isLogoutDialogVisible = true
-                )
-            }
+        _state.update { popularRepositoriesUiState ->
+            popularRepositoriesUiState.copy(
+                isLogoutDialogVisible = true
+            )
         }
     }
 
@@ -81,9 +75,9 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun loadRepositories() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(isLoading = true) }
-            val result = repositoryLoadService.loadRepositories()
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            val result = repoRepository.getRepositories()
             result.fold(
                 onSuccess = {
                     val entityRepositories = result.getOrNull()
@@ -96,24 +90,27 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                         }
                     } else {
                         _state.update { it.copy(isLoading = false) }
-                        val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                        withContext(Dispatchers.IO) {
+                            val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
+                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                        }
                     }
                 },
 
                 onFailure = { error ->
                     _state.update { it.copy(isLoading = false) }
-                    val resId = ErrorMapper.mapToStringMessage(error)
-                    _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    withContext(Dispatchers.IO) {
+                        val resId = ErrorMapper.mapToStringMessage(error)
+                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    }
                 }
             )
         }
     }
 
     private fun onLogoutConfirmed() {
+        _state.update { it.copy(isLogoutDialogVisible = false) }
         viewModelScope.launch {
-            _state.update { it.copy(isLogoutDialogVisible = false) }
-
             val result = authRepository.logout()
             result.fold(
                 onSuccess = {

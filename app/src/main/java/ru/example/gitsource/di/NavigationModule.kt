@@ -6,7 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.domain.OAuthLauncher
-import ru.example.gitsource.navigation.Navigator
+import ru.example.gitsource.presentation.navigation.Navigator
 
 @Module
 @InstallIn(ActivityComponent::class)

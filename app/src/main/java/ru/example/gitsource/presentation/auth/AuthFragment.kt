@@ -14,11 +14,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.example.gitsource.domain.auth.AuthAction
-import ru.example.gitsource.domain.auth.AuthEvent
-import ru.example.gitsource.navigation.Command
-import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
+import ru.example.gitsource.presentation.navigation.Command
+import ru.example.gitsource.presentation.navigation.Navigator
 import ru.example.gitsource.theme.GitSourceTheme
 import javax.inject.Inject
 
@@ -68,10 +66,6 @@ internal class AuthFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.events.collect { event ->
                 when (event) {
-                    is AuthEvent.LaunchAuth -> {
-                        navigator.launchOAuth()
-                    }
-
                     is AuthEvent.NavigateToPopular -> {
                         val command = Command.NavigateToCommand(Screen.PopularRepositoriesScreen)
                         navigator.execute(command)
@@ -83,6 +77,11 @@ internal class AuthFragment : Fragment() {
                             event.errorMessageResId,
                             Toast.LENGTH_LONG
                         ).show()
+                    }
+
+                    is AuthEvent.NavigateToCustomTabs -> {
+                        val command = Command.NavigateToCommand(Screen.OAuthScreen)
+                        navigator.execute(command)
                     }
                 }
             }

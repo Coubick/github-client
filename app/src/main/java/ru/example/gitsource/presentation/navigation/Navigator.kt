@@ -1,4 +1,4 @@
-package ru.example.gitsource.navigation
+package ru.example.gitsource.presentation.navigation
 
 import android.os.Bundle
 import androidx.activity.OnBackPressedDispatcher
@@ -11,7 +11,6 @@ import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.presentation.Screen
-import ru.example.gitsource.presentation.toDestinationId
 import javax.inject.Inject
 
 @ActivityScoped
@@ -29,7 +28,7 @@ internal class Navigator @Inject constructor(
 
     private fun makeBundle(screen: Screen): Bundle? {
         val bundle = when (val screen = screen) {
-            is Screen.RepositoryCardScreen -> {
+            is Screen.RepositoryDetailsScreen -> {
                 bundleOf(
                     REPOSITORY_NAME_KEY to screen.repositoryName,
                     REPOSITORY_OWNER_NAME to screen.repositoryOwnerName
@@ -51,28 +50,40 @@ internal class Navigator @Inject constructor(
             }
 
             is Command.NavigateToCommand -> {
-                val navigateTo = command.screen.toDestinationId()
-                val bundle = makeBundle(command.screen)
-                navController?.navigate(navigateTo, bundle)
+                when (command.screen) {
+                    is Screen.Internal -> {
+                        val navigateTo = command.screen.destinationId
+                        val bundle = makeBundle(command.screen)
+                        navController?.navigate(navigateTo, bundle)
+                    }
+
+                    Screen.OAuthScreen -> {
+                        oAuthLauncher.launchOAuth()
+                    }
+                }
             }
 
             is Command.NavigateToAndClearCommand -> {
-                val destinationId = command.screen.toDestinationId()
-                val clearToId = command.clearToScreen.toDestinationId()
+                when (command.screen) {
+                    is Screen.Internal -> {
+                        val destinationId = command.screen.destinationId
+                        val clearToId = command.clearToScreen.destinationId
 
-                val options = navOptions {
-                    launchSingleTop = true
-                    popUpTo(clearToId) {
-                        inclusive = true
+                        val options = navOptions {
+                            launchSingleTop = true
+                            popUpTo(clearToId) {
+                                inclusive = true
+                            }
+                        }
+
+                        navController
+                            ?.navigate(
+                                resId = destinationId,
+                                args = null,
+                                navOptions = options
+                            )
                     }
                 }
-
-                navController
-                    ?.navigate(
-                        resId = destinationId,
-                        args = null,
-                        navOptions = options
-                    )
             }
         }
     }
@@ -99,9 +110,5 @@ internal class Navigator @Inject constructor(
                 navController?.popBackStack()
             }
         }
-    }
-
-    fun launchOAuth() {
-        oAuthLauncher.launchOAuth()
     }
 }

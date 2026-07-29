@@ -13,10 +13,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.example.gitsource.domain.popular.PopularRepositoriesEvent
-import ru.example.gitsource.navigation.Command
-import ru.example.gitsource.navigation.Navigator
 import ru.example.gitsource.presentation.Screen
+import ru.example.gitsource.presentation.navigation.Command
+import ru.example.gitsource.presentation.navigation.Navigator
 import ru.example.gitsource.theme.GitSourceTheme
 import javax.inject.Inject
 
@@ -54,9 +53,9 @@ internal class PopularRepositoriesFragment : Fragment() {
                     is PopularRepositoriesEvent.NavigateToRepositoryCard -> {
                         val command =
                             Command.NavigateToCommand(
-                                Screen.RepositoryCardScreen(
-                                    repositoryName = event.repositoryName,
-                                    repositoryOwnerName = event.repositoryName
+                                Screen.RepositoryDetailsScreen(
+                                    repositoryName = event.repository.name,
+                                    repositoryOwnerName = event.repository.authorName
                                 )
                             )
                         navigator.execute(command)

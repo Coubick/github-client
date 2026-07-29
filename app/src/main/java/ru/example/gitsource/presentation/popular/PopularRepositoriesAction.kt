@@ -1,9 +1,10 @@
-package ru.example.gitsource.domain.popular
+package ru.example.gitsource.presentation.popular
+
+import ru.example.gitsource.domain.popular.RepositoryCardEntity
 
 internal sealed interface PopularRepositoriesAction {
-    data class RepositoryCardClicked(
-        val repositoryName: String,
-        val repositoryOwnerName: String
+    data class RepositoryClicked(
+        val repository: RepositoryCardEntity
     ) : PopularRepositoriesAction
     data object LogoutClicked : PopularRepositoriesAction
     data object LogoutConfirmed : PopularRepositoriesAction
