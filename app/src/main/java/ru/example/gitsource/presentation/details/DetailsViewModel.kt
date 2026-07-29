@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.details.DetailsAction
 import ru.example.gitsource.domain.details.DetailsEvent
@@ -23,12 +25,14 @@ internal class DetailsViewModel @Inject constructor(
     private val detailsRepository: DetailsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
     private val _state = MutableStateFlow(
         DetailsUiState(
             isLoading = false,
             details = null
         )
     )
+
     private val _event = MutableSharedFlow<DetailsEvent>()
 
     private companion object {
@@ -54,6 +58,7 @@ internal class DetailsViewModel @Inject constructor(
     }
 
     private fun getDetails() {
+        _state.update { uiState -> uiState.copy(isLoading = true) }
         viewModelScope.launch {
             val repositoryName = savedStateHandle.get<String>(REPOSITORY_NAME_KEY)
             val ownerName = savedStateHandle.get<String>(REPOSITORY_OWNER_NAME_KEY)
@@ -66,26 +71,35 @@ internal class DetailsViewModel @Inject constructor(
                 result.fold(
                     onSuccess = {
                         val repositoryDetails = result.getOrNull()
+                        _state.update { uiState -> uiState.copy(isLoading = false) }
                         if (repositoryDetails != null) {
-                            _state.update { detailsUiState ->
-                                detailsUiState.copy(
-                                    details = repositoryDetails
-                                )
+                            withContext(Dispatchers.IO) {
+                                _state.update { detailsUiState ->
+                                    detailsUiState.copy(
+                                        details = repositoryDetails
+                                    )
+                                }
                             }
                         } else {
-                            val resId =
-                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                            _event.emit(DetailsEvent.ShowError(resId))
+                            withContext(Dispatchers.IO) {
+                                val resId =
+                                    ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
+                                _event.emit(DetailsEvent.ShowError(resId))
+                            }
                         }
                     },
 
                     onFailure = { error ->
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _event.emit(DetailsEvent.ShowError(resId))
+                        _state.update { uiState -> uiState.copy(isLoading = false) }
+                        withContext(Dispatchers.IO) {
+                            val resId = ErrorMapper.mapToStringMessage(error)
+                            _event.emit(DetailsEvent.ShowError(resId))
+                        }
                     }
                 )
 
             } else {
+                _state.update { uiState -> uiState.copy(isLoading = false) }
                 val resId = ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
                 _event.emit(
                     DetailsEvent.ShowError(resId)

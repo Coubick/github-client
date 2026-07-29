@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.example.gitsource.data.auth.AuthRepositoryImpl
 import ru.example.gitsource.data.auth.AuthTokenInterceptor
 import ru.example.gitsource.data.auth.TokenManager
+import ru.example.gitsource.data.details.DetailsRepositoryImpl
 import ru.example.gitsource.data.local.DataConstants.PREFERENCES_NAME
 import ru.example.gitsource.data.local.LocalDataStore
 import ru.example.gitsource.data.network.JsonAcceptInterceptor
@@ -25,6 +26,7 @@ import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
 import ru.example.gitsource.data.popular.RepoRepositoryImpl
 import ru.example.gitsource.domain.auth.AuthRepository
+import ru.example.gitsource.domain.details.DetailsRepository
 import ru.example.gitsource.domain.popular.RepoRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -115,6 +117,15 @@ internal object AppModule {
     fun provideRepoRepository(gitHubApi: GitHubApi, networkClient: NetworkClient): RepoRepository {
         return RepoRepositoryImpl(
             githubApi = gitHubApi,
+            networkClient = networkClient
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDetailsRepository(gitHubApi: GitHubApi, networkClient: NetworkClient) : DetailsRepository {
+        return DetailsRepositoryImpl(
+            gitHubApi = gitHubApi,
             networkClient = networkClient
         )
     }

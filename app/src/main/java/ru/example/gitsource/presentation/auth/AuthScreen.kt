@@ -28,7 +28,7 @@ import ru.example.gitsource.R
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.PictureDefaults.mediumBorderSize
 import ru.example.gitsource.presentation.ui.PictureDefaults.mediumCornerShapeSize
-import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.largeImageSize
 import ru.example.gitsource.presentation.ui.PictureDefaults.largeShadowElevation
 import ru.example.gitsource.presentation.ui.SpaceDefaults
 
@@ -47,7 +47,7 @@ internal fun AuthScreen(
             painter = painterResource(R.drawable.gitlogo),
             contentDescription = stringResource(R.string.logo_description),
             modifier = Modifier
-                .size(mediumImageSize)
+                .size(largeImageSize)
                 .clip(
                     shape = RoundedCornerShape(mediumCornerShapeSize),
                 )
@@ -65,11 +65,11 @@ internal fun AuthScreen(
                 )
         )
 
-        Spacer(modifier = Modifier.height(SpaceDefaults.SpaceSize))
+        Spacer(modifier = Modifier.height(SpaceDefaults.largeSpaceSize))
 
         Button(
             onClick = onLoginClick,
-            modifier = Modifier.width(mediumImageSize),
+            modifier = Modifier.width(largeImageSize),
             enabled = state.isLoading.not(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
