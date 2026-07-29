@@ -35,9 +35,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
-import ru.example.gitsource.domain.details.DetailsAction
 import ru.example.gitsource.domain.details.DetailsEntity
-import ru.example.gitsource.domain.details.DetailsUiState
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
 import ru.example.gitsource.presentation.ui.PaddingDefaults.largePadding
 import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding

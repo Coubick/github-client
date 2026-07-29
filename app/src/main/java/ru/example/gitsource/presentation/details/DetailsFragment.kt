@@ -13,7 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import ru.example.gitsource.domain.details.DetailsEvent
 import ru.example.gitsource.presentation.navigation.Command
 import ru.example.gitsource.presentation.navigation.Navigator
 import ru.example.gitsource.theme.GitSourceTheme

@@ -13,10 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
-import ru.example.gitsource.domain.details.DetailsAction
-import ru.example.gitsource.domain.details.DetailsEvent
 import ru.example.gitsource.domain.details.DetailsRepository
-import ru.example.gitsource.domain.details.DetailsUiState
 import ru.example.gitsource.presentation.auth.ErrorMapper
 import javax.inject.Inject
 
