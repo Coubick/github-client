@@ -27,4 +27,23 @@
         android:name="ru.example.gitsource.presentation.start.StartFragment"
         android:label="StartFragment" />
 
+    <fragment
+        android:id="@+id/repositoryDetailsFragment"
+        android:name="ru.example.gitsource.presentation.details.RepositoryDetailsFragment"
+        android:label="RepositoryDetailsFragment">
+
+        <argument
+            android:name="repositoryName"
+            app:argType="string" />
+
+        <argument
+            android:name="repositoryOwnerName"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchRepositoryFragment"
+        android:name="ru.example.gitsource.presentation.search.RepositorySearchFragment"
+        android:label="StartFragment" />
+
 </navigation>

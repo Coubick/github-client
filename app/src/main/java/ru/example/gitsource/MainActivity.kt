@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import ru.example.gitsource.domain.LoginStatusChecker
-import ru.example.gitsource.navigation.Navigator
+import ru.example.gitsource.presentation.navigation.Navigator
 import javax.inject.Inject
 
 @AndroidEntryPoint

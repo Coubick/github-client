@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
+import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 
 @Composable
 internal fun StartScreen(modifier: Modifier = Modifier) {

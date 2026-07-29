@@ -14,10 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.example.gitsource.domain.AuthAction
-import ru.example.gitsource.domain.AuthEvent
-import ru.example.gitsource.domain.AuthRepository
-import ru.example.gitsource.domain.AuthUiState
+import ru.example.gitsource.domain.auth.AuthRepository
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,9 +37,12 @@ internal class AuthViewModel @Inject constructor(
         savedStateHandle.remove<String>(KEY_AUTH_CODE)
     }
 
-    private val _state = MutableStateFlow(AuthUiState())
+    private val _state = MutableStateFlow(
+        AuthUiState(
+            isLoading = false
+        )
+    )
     val state: StateFlow<AuthUiState> = _state.asStateFlow()
-
     private val _events = MutableSharedFlow<AuthEvent>()
     val events: SharedFlow<AuthEvent> = _events.asSharedFlow()
 
@@ -54,11 +54,12 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onLoginClick() {
+        _state.update { authUiState ->
+            authUiState.copy(isLoading = true)
+        }
+
         viewModelScope.launch {
-            _state.update { authUiState ->
-                authUiState.copy(isLoading = true)
-            }
-            _events.emit(AuthEvent.LaunchAuth)
+            _events.emit(AuthEvent.NavigateToCustomTabs)
         }
     }
 
@@ -82,10 +83,8 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onLoginCancelled() {
-        viewModelScope.launch {
-            _state.update { authUiState ->
-                authUiState.copy(isLoading = false)
-            }
+        _state.update { authUiState ->
+            authUiState.copy(isLoading = false)
         }
     }
 }

@@ -25,13 +25,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.example.gitsource.R
-import ru.example.gitsource.domain.AuthUiState
-import ru.example.gitsource.presentation.defaults.CircularProgressIndicatorDefaults
-import ru.example.gitsource.presentation.defaults.PictureDefaults.borderWidthMedium
-import ru.example.gitsource.presentation.defaults.PictureDefaults.cornerShapeMedium
-import ru.example.gitsource.presentation.defaults.PictureDefaults.imageSizeMedium
-import ru.example.gitsource.presentation.defaults.PictureDefaults.shadowElevationHuge
-import ru.example.gitsource.presentation.defaults.SpaceDefaults
+import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumBorderSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumCornerShapeSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.largeShadowElevation
+import ru.example.gitsource.presentation.ui.SpaceDefaults
 
 @Composable
 internal fun AuthScreen(
@@ -48,17 +47,17 @@ internal fun AuthScreen(
             painter = painterResource(R.drawable.gitlogo),
             contentDescription = stringResource(R.string.logo_description),
             modifier = Modifier
-                .size(imageSizeMedium)
+                .size(mediumImageSize)
                 .clip(
-                    shape = RoundedCornerShape(cornerShapeMedium),
+                    shape = RoundedCornerShape(mediumCornerShapeSize),
                 )
                 .border(
-                    width = borderWidthMedium,
+                    width = mediumBorderSize,
                     color = Color.Gray,
-                    shape = RoundedCornerShape(cornerShapeMedium),
+                    shape = RoundedCornerShape(mediumCornerShapeSize),
                 )
                 .shadow(
-                    elevation = shadowElevationHuge,
+                    elevation = largeShadowElevation,
                     shape = CircleShape,
                     clip = false,
                     ambientColor = Color.LightGray,
@@ -70,7 +69,7 @@ internal fun AuthScreen(
 
         Button(
             onClick = onLoginClick,
-            modifier = Modifier.width(imageSizeMedium),
+            modifier = Modifier.width(mediumImageSize),
             enabled = state.isLoading.not(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,

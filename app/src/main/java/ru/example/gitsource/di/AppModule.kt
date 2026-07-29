@@ -23,7 +23,9 @@ import ru.example.gitsource.data.network.NetworkClient
 import ru.example.gitsource.data.network.NetworkConstants.BASE_API_URL
 import ru.example.gitsource.data.network.api.GitHubApi
 import ru.example.gitsource.data.network.api.GitHubOAuthApi
-import ru.example.gitsource.domain.AuthRepository
+import ru.example.gitsource.data.popular.RepoRepositoryImpl
+import ru.example.gitsource.domain.auth.AuthRepository
+import ru.example.gitsource.domain.popular.RepoRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -106,5 +108,14 @@ internal object AppModule {
     @Singleton
     fun provideTokenManager(localDataStore: LocalDataStore): TokenManager {
         return TokenManager(localDataStore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepoRepository(gitHubApi: GitHubApi, networkClient: NetworkClient): RepoRepository {
+        return RepoRepositoryImpl(
+            githubApi = gitHubApi,
+            networkClient = networkClient
+        )
     }
 }

@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.compose.foundation)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

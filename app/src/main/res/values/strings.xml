@@ -2,7 +2,7 @@
     <string name="app_name">Git Source</string>
     <string name="title">Git Source</string>
     <string name="login">Войти</string>
-    <string name="popular_repo_screen">Тут будет список популярных репозиториев</string>
+    <string name="popular_repo_title">Популярные репозитории</string>
     <string name="back_button">Назад</string>
 
     <string name="error_unauthorized">Неверный код авторизации</string>
@@ -14,4 +14,13 @@
     <string name="error_network">Ошибка сети</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="logo_description">"Логотип GitSource "</string>
+    <string name="avatar">Аватар пользователя</string>
+    <string name="stars_description">Количество звёзд у репозитория</string>
+    <string name="search_description">Иконка поиска</string>
+    <string name="logout_descrpiption">Иконка выхода</string>
+    <string name="no_language_message">Нет языка</string>
+    <string name="confirm_exit">Вы уверены, что хотите выйти?</string>
+    <string name="confir">Да\n</string>
+    <string name="confirm">Да</string>
+    <string name="dismiss">Нет</string>
 </resources>
