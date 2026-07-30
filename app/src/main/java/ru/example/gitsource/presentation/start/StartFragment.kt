@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.example.gitsource.domain.LoginStatusChecker
 import ru.example.gitsource.presentation.navigation.Command
@@ -51,7 +52,7 @@ internal class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
             val isLoggedIn = loginStatusChecker.isLoggedIn()
             if (isLoggedIn) {
                 navigator.execute(

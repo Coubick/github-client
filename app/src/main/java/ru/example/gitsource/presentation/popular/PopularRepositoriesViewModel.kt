@@ -76,7 +76,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     private fun loadRepositories() {
         _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val result = repoRepository.getRepositories()
             result.fold(
                 onSuccess = {
@@ -110,7 +110,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     private fun onLogoutConfirmed() {
         _state.update { it.copy(isLogoutDialogVisible = false) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val result = authRepository.logout()
             result.fold(
                 onSuccess = {

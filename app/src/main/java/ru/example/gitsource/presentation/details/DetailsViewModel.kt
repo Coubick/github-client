@@ -47,7 +47,7 @@ internal class DetailsViewModel @Inject constructor(
     fun onAction(action: DetailsAction) {
         when (action) {
             is DetailsAction.NavigateBackClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.Default) {
                     _event.emit(DetailsEvent.NavigateBack)
                 }
             }
@@ -56,7 +56,7 @@ internal class DetailsViewModel @Inject constructor(
 
     private fun getDetails() {
         _state.update { uiState -> uiState.copy(isLoading = true) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val repositoryName = savedStateHandle.get<String>(REPOSITORY_NAME_KEY)
             val ownerName = savedStateHandle.get<String>(REPOSITORY_OWNER_NAME_KEY)
 
