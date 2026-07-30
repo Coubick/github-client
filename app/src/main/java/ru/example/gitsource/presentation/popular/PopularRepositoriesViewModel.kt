@@ -90,7 +90,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                         }
                     } else {
                         _state.update { it.copy(isLoading = false) }
-                        withContext(Dispatchers.IO) {
+                        withContext(Dispatchers.Default) {
                             val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
                             _event.emit(PopularRepositoriesEvent.ShowError(resId))
                         }
@@ -99,7 +99,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
                 onFailure = { error ->
                     _state.update { it.copy(isLoading = false) }
-                    withContext(Dispatchers.IO) {
+                    withContext(Dispatchers.Default) {
                         val resId = ErrorMapper.mapToStringMessage(error)
                         _event.emit(PopularRepositoriesEvent.ShowError(resId))
                     }
@@ -117,7 +117,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                     _event.emit(PopularRepositoriesEvent.NavigateToAuth)
                 },
                 onFailure = { error ->
-                    withContext(Dispatchers.IO) {
+                    withContext(Dispatchers.Default) {
                         val resId = ErrorMapper.mapToStringMessage(error)
                         _event.emit(PopularRepositoriesEvent.ShowError(resId))
                     }

@@ -70,25 +70,19 @@ internal class DetailsViewModel @Inject constructor(
                         val repositoryDetails = result.getOrNull()
                         _state.update { uiState -> uiState.copy(isLoading = false) }
                         if (repositoryDetails != null) {
-                            withContext(Dispatchers.IO) {
                                 _state.update { detailsUiState ->
                                     detailsUiState.copy(
                                         details = repositoryDetails
                                     )
                                 }
-                            }
                         } else {
-                            withContext(Dispatchers.IO) {
-                                val resId =
-                                    ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                                _event.emit(DetailsEvent.ShowError(resId))
-                            }
+                            handleEmptyResult()
                         }
                     },
 
                     onFailure = { error ->
                         _state.update { uiState -> uiState.copy(isLoading = false) }
-                        withContext(Dispatchers.IO) {
+                        withContext(Dispatchers.Default) {
                             val resId = ErrorMapper.mapToStringMessage(error)
                             _event.emit(DetailsEvent.ShowError(resId))
                         }
@@ -96,12 +90,16 @@ internal class DetailsViewModel @Inject constructor(
                 )
 
             } else {
-                _state.update { uiState -> uiState.copy(isLoading = false) }
-                val resId = ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                _event.emit(
-                    DetailsEvent.ShowError(resId)
-                )
+                handleEmptyResult()
             }
         }
+    }
+
+    private suspend fun handleEmptyResult(){
+        _state.update { uiState -> uiState.copy(isLoading = false) }
+        val resId = ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
+        _event.emit(
+            DetailsEvent.ShowError(resId)
+        )
     }
 }
