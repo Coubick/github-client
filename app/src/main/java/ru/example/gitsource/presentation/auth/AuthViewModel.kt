@@ -64,7 +64,7 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onGitHubAuthCode(code: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             val result = repository.login(code = code)
 
@@ -73,10 +73,8 @@ internal class AuthViewModel @Inject constructor(
                     _events.emit(AuthEvent.NavigateToPopular)
                 },
                 onFailure = { error ->
-                    withContext(Dispatchers.IO) {
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _events.emit(AuthEvent.ShowError(resId))
-                    }
+                    val resId = ErrorMapper.mapToStringMessage(error)
+                    _events.emit(AuthEvent.ShowError(resId))
                 }
             )
         }

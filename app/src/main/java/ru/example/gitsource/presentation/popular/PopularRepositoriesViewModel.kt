@@ -51,7 +51,6 @@ internal class PopularRepositoriesViewModel @Inject constructor(
         }
     }
 
-
     private fun onRepositoryClicked(repository: RepositoryCardEntity) {
         viewModelScope.launch {
             _event.emit(
@@ -76,7 +75,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     private fun loadRepositories() {
         _state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val result = repoRepository.getRepositories()
             result.fold(
                 onSuccess = {
@@ -90,19 +89,15 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                         }
                     } else {
                         _state.update { it.copy(isLoading = false) }
-                        withContext(Dispatchers.Default) {
-                            val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
-                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                        }
+                        val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
+                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
                     }
                 },
 
                 onFailure = { error ->
                     _state.update { it.copy(isLoading = false) }
-                    withContext(Dispatchers.Default) {
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                    }
+                    val resId = ErrorMapper.mapToStringMessage(error)
+                    _event.emit(PopularRepositoriesEvent.ShowError(resId))
                 }
             )
         }
@@ -110,17 +105,15 @@ internal class PopularRepositoriesViewModel @Inject constructor(
 
     private fun onLogoutConfirmed() {
         _state.update { it.copy(isLogoutDialogVisible = false) }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             val result = authRepository.logout()
             result.fold(
                 onSuccess = {
                     _event.emit(PopularRepositoriesEvent.NavigateToAuth)
                 },
                 onFailure = { error ->
-                    withContext(Dispatchers.Default) {
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                    }
+                    val resId = ErrorMapper.mapToStringMessage(error)
+                    _event.emit(PopularRepositoriesEvent.ShowError(resId))
                 }
             )
         }
