@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.details.DetailsRepository
 import ru.example.gitsource.presentation.auth.ErrorMapper
-import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_NAME_KEY
-import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_OWNER_NAME_KEY
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,10 +35,6 @@ internal class DetailsViewModel @Inject constructor(
     val state = _state.asStateFlow()
     val event = _event.asSharedFlow()
 
-    init {
-        onAction(DetailsAction.GetDetails)
-    }
-
     fun onAction(action: DetailsAction) {
         when (action) {
             is DetailsAction.NavigateBackClicked -> {
@@ -57,8 +52,8 @@ internal class DetailsViewModel @Inject constructor(
     private fun getDetails() {
         _state.update { uiState -> uiState.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.Default) {
-            val repositoryName = savedStateHandle.get<String>(REPOSITORY_NAME_KEY)
-            val ownerName = savedStateHandle.get<String>(REPOSITORY_OWNER_NAME_KEY)
+            val repositoryName = RepositoryDetailsParams.getRepositoryName(savedStateHandle)
+            val ownerName = RepositoryDetailsParams.getRepositoryOwnerName(savedStateHandle)
 
             if (ownerName != null && repositoryName != null) {
                 val result = detailsRepository.getRepositoryDetails(

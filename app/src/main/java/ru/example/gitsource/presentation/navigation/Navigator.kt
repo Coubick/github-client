@@ -11,8 +11,6 @@ import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.presentation.Screen
-import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_NAME_KEY
-import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_OWNER_NAME_KEY
 import javax.inject.Inject
 
 @ActivityScoped
@@ -23,22 +21,7 @@ internal class Navigator @Inject constructor(
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
     private var activity: AppCompatActivity? = null
 
-    private fun makeBundle(screen: Screen): Bundle? {
-        val bundle = when (val screen = screen) {
-            is Screen.RepositoryDetailsScreen -> {
-                bundleOf(
-                    REPOSITORY_NAME_KEY to screen.repositoryName,
-                    REPOSITORY_OWNER_NAME_KEY to screen.repositoryOwnerName
-                )
-            }
 
-            else -> {
-                null
-            }
-        }
-
-        return bundle
-    }
 
     fun execute(command: Command) {
         when (command) {
@@ -50,7 +33,7 @@ internal class Navigator @Inject constructor(
                 when (command.screen) {
                     is Screen.Internal -> {
                         val navigateTo = command.screen.destinationId
-                        val bundle = makeBundle(command.screen)
+                        val bundle = RepositoryDetailsParams.makeBundle(command.screen)
                         navController?.navigate(navigateTo, bundle)
                     }
 
