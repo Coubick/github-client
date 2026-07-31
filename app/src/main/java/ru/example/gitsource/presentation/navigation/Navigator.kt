@@ -11,6 +11,8 @@ import dagger.hilt.android.scopes.ActivityScoped
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.OAuthLauncher
 import ru.example.gitsource.presentation.Screen
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_NAME_KEY
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_OWNER_NAME_KEY
 import javax.inject.Inject
 
 @ActivityScoped
@@ -21,17 +23,12 @@ internal class Navigator @Inject constructor(
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
     private var activity: AppCompatActivity? = null
 
-    private companion object {
-        const val REPOSITORY_NAME_KEY = "repositoryName"
-        const val REPOSITORY_OWNER_NAME = "repositoryOwnerName"
-    }
-
     private fun makeBundle(screen: Screen): Bundle? {
         val bundle = when (val screen = screen) {
             is Screen.RepositoryDetailsScreen -> {
                 bundleOf(
                     REPOSITORY_NAME_KEY to screen.repositoryName,
-                    REPOSITORY_OWNER_NAME to screen.repositoryOwnerName
+                    REPOSITORY_OWNER_NAME_KEY to screen.repositoryOwnerName
                 )
             }
 

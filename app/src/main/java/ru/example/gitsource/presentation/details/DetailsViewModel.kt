@@ -11,10 +11,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.details.DetailsRepository
 import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_NAME_KEY
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams.REPOSITORY_OWNER_NAME_KEY
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,11 +23,6 @@ internal class DetailsViewModel @Inject constructor(
     private val detailsRepository: DetailsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    private companion object {
-        const val REPOSITORY_OWNER_NAME_KEY = "repositoryOwnerName"
-        const val REPOSITORY_NAME_KEY = "repositoryName"
-    }
 
     private val _state = MutableStateFlow(
         DetailsUiState(
@@ -41,7 +37,7 @@ internal class DetailsViewModel @Inject constructor(
     val event = _event.asSharedFlow()
 
     init {
-        onAction(DetailsAction.LoadDetails)
+        onAction(DetailsAction.GetDetails)
     }
 
     fun onAction(action: DetailsAction) {
@@ -52,7 +48,7 @@ internal class DetailsViewModel @Inject constructor(
                 }
             }
 
-            is DetailsAction.LoadDetails -> {
+            is DetailsAction.GetDetails -> {
                 getDetails()
             }
         }

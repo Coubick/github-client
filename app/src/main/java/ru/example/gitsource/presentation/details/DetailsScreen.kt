@@ -145,7 +145,10 @@ private fun RepositoryDetailsContent(
             Spacer(modifier = Modifier.width(mediumSpaceSize))
 
             Text(
-                text = "${stringResource(R.string.owner)}: ${details.ownerName}",
+                text = stringResource(
+                    id = R.string.owner_format_named,
+                    formatArgs = arrayOf(details.ownerName)
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium
             )
@@ -165,7 +168,10 @@ private fun RepositoryDetailsContent(
             Spacer(modifier = Modifier.width(mediumSpaceSize))
 
             Text(
-                text = "${stringResource(R.string.amount_of_stars)}: ${details.starsCount}",
+                text = stringResource(
+                    id = R.string.amount_of_stars,
+                    formatArgs = arrayOf(details.starsCount)
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium
             )
@@ -184,7 +190,12 @@ private fun RepositoryDetailsContent(
             Spacer(modifier = Modifier.width(mediumSpaceSize))
 
             Text(
-                text = "${stringResource(R.string.language)}: ${details.language ?: stringResource(R.string.no_language_message)}",
+                text = stringResource(
+                    id = R.string.language,
+                    formatArgs =
+                        if (details.language != null) arrayOf(details.language)
+                        else arrayOf(R.string.no_language_message)
+                ),
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Medium
             )
@@ -202,7 +213,7 @@ private fun RepositoryDetailsContent(
                 Spacer(modifier = Modifier.width(mediumSpaceSize))
 
                 Text(
-                    text = stringResource(R.string.description) + ": ",
+                    text = stringResource(R.string.description),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Medium
                 )
@@ -237,9 +248,12 @@ private fun RepositoryDetailsContent(
             Spacer(modifier = Modifier.width(mediumSpaceSize))
 
             Text(
-                text = "${stringResource(R.string.watchers_count)}: ${details.watchersCount}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                text = stringResource(
+                    id = R.string.watchers_count,
+                    formatArgs = arrayOf(details.watchersCount)
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Medium
             )
         }
 
@@ -256,10 +270,12 @@ private fun RepositoryDetailsContent(
             Spacer(modifier = Modifier.width(mediumSpaceSize))
 
             Text(
-                text = "${stringResource(R.string.issues_count)}: ${details.openIssuesCount}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
-
+                text = stringResource(
+                    id = R.string.issues_count,
+                    formatArgs = arrayOf(details.openIssuesCount)
+                ),
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Medium
             )
         }
     }
