@@ -29,7 +29,10 @@
     <string name="amount_of_stars">Количество звёзд: %1$d</string>
     <string name="language">Язык: %1$s</string>
     <string name="no_description">Описания нет</string>
-    <string name="description">Описание: </string>
-    <string name="watchers_count">Количество наблюдателей: %1$s</string>
-    <string name="issues_count">Количество открытых issue: %1$s</string>
+    <string name="description">Описание</string>
+    <string name="watchers_count">Количество наблюдателей</string>
+    <string name="issues_count">Количество открытых issue</string>
+    <string name="search_repo_text">Чтобы найти репозиторий, начните печатать</string>
+    <string name="repositories_not_found">Репозитории не найдены</string>
+    <string name="enter_request">Введите запрос</string>
 </resources>

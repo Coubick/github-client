@@ -52,7 +52,7 @@ internal class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
+        viewLifecycleOwner.lifecycleScope.launch {
             val isLoggedIn = loginStatusChecker.isLoggedIn()
             if (isLoggedIn) {
                 navigator.execute(

@@ -120,7 +120,7 @@ internal object AppModule {
             networkClient = networkClient
         )
     }
-
+    
     @Provides
     @Singleton
     fun provideDetailsRepository(gitHubApi: GitHubApi, networkClient: NetworkClient) : DetailsRepository {

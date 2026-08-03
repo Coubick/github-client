@@ -23,6 +23,11 @@ internal class DetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    private companion object {
+        const val REPOSITORY_OWNER_NAME_KEY = "repositoryOwnerName"
+        const val REPOSITORY_NAME_KEY = "repositoryName"
+    }
+
     private val _state = MutableStateFlow(
         DetailsUiState(
             isLoading = false,
@@ -32,13 +37,14 @@ internal class DetailsViewModel @Inject constructor(
 
     private val _event = MutableSharedFlow<DetailsEvent>()
 
+
     val state = _state.asStateFlow()
     val event = _event.asSharedFlow()
 
     fun onAction(action: DetailsAction) {
         when (action) {
             is DetailsAction.NavigateBackClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.Default) {
                     _event.emit(DetailsEvent.NavigateBack)
                 }
             }

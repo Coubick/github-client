@@ -12,7 +12,6 @@ import ru.example.gitsource.data.network.NetworkConstants.HEADER_ACCEPT_VALUE
 
 internal interface GitHubApi {
     private companion object {
-        const val QUERY = "stars:>0"
         const val SORT_BY_PARAMETER = "stars"
         const val SORT_ORDER = "desc"
         const val PER_PAGE = 20
@@ -21,7 +20,7 @@ internal interface GitHubApi {
     @GET("search/repositories")
     suspend fun getRepositoriesList(
         @Header(HEADER_ACCEPT) accept: String = HEADER_ACCEPT_VALUE,
-        @Query("q") query: String = QUERY,
+        @Query("q") query: String,
         @Query("sort") sort: String = SORT_BY_PARAMETER,
         @Query("order") order: String = SORT_ORDER,
         @Query("per_page") perPage: Int = PER_PAGE
