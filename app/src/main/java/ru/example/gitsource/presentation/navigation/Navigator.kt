@@ -21,27 +21,7 @@ internal class Navigator @Inject constructor(
     private lateinit var onBackPressedDispatcher: OnBackPressedDispatcher
     private var activity: AppCompatActivity? = null
 
-    private companion object {
-        const val REPOSITORY_NAME_KEY = "repositoryName"
-        const val REPOSITORY_OWNER_NAME = "repositoryOwnerName"
-    }
 
-    private fun makeBundle(screen: Screen): Bundle? {
-        val bundle = when (val screen = screen) {
-            is Screen.RepositoryDetailsScreen -> {
-                bundleOf(
-                    REPOSITORY_NAME_KEY to screen.repositoryName,
-                    REPOSITORY_OWNER_NAME to screen.repositoryOwnerName
-                )
-            }
-
-            else -> {
-                null
-            }
-        }
-
-        return bundle
-    }
 
     fun execute(command: Command) {
         when (command) {
@@ -53,7 +33,7 @@ internal class Navigator @Inject constructor(
                 when (command.screen) {
                     is Screen.Internal -> {
                         val navigateTo = command.screen.destinationId
-                        val bundle = makeBundle(command.screen)
+                        val bundle = RepositoryDetailsParams.makeBundle(command.screen)
                         navController?.navigate(navigateTo, bundle)
                     }
 

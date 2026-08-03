@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.details.DetailsRepository
 import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,24 +32,19 @@ internal class DetailsViewModel @Inject constructor(
 
     private val _event = MutableSharedFlow<DetailsEvent>()
 
-    private companion object {
-        const val REPOSITORY_OWNER_NAME_KEY = "repositoryOwnerName"
-        const val REPOSITORY_NAME_KEY = "repositoryName"
-    }
-
     val state = _state.asStateFlow()
     val event = _event.asSharedFlow()
-
-    init {
-        getDetails()
-    }
 
     fun onAction(action: DetailsAction) {
         when (action) {
             is DetailsAction.NavigateBackClicked -> {
-                viewModelScope.launch(Dispatchers.Default) {
+                viewModelScope.launch {
                     _event.emit(DetailsEvent.NavigateBack)
                 }
+            }
+
+            is DetailsAction.GetDetails -> {
+                getDetails()
             }
         }
     }
@@ -57,8 +52,8 @@ internal class DetailsViewModel @Inject constructor(
     private fun getDetails() {
         _state.update { uiState -> uiState.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.Default) {
-            val repositoryName = savedStateHandle.get<String>(REPOSITORY_NAME_KEY)
-            val ownerName = savedStateHandle.get<String>(REPOSITORY_OWNER_NAME_KEY)
+            val repositoryName = RepositoryDetailsParams.getRepositoryName(savedStateHandle)
+            val ownerName = RepositoryDetailsParams.getRepositoryOwnerName(savedStateHandle)
 
             if (ownerName != null && repositoryName != null) {
                 val result = detailsRepository.getRepositoryDetails(
@@ -70,11 +65,11 @@ internal class DetailsViewModel @Inject constructor(
                         val repositoryDetails = result.getOrNull()
                         _state.update { uiState -> uiState.copy(isLoading = false) }
                         if (repositoryDetails != null) {
-                                _state.update { detailsUiState ->
-                                    detailsUiState.copy(
-                                        details = repositoryDetails
-                                    )
-                                }
+                            _state.update { detailsUiState ->
+                                detailsUiState.copy(
+                                    details = repositoryDetails
+                                )
+                            }
                         } else {
                             handleEmptyResult()
                         }
@@ -82,10 +77,8 @@ internal class DetailsViewModel @Inject constructor(
 
                     onFailure = { error ->
                         _state.update { uiState -> uiState.copy(isLoading = false) }
-                        withContext(Dispatchers.Default) {
-                            val resId = ErrorMapper.mapToStringMessage(error)
-                            _event.emit(DetailsEvent.ShowError(resId))
-                        }
+                        val resId = ErrorMapper.mapToStringMessage(error)
+                        _event.emit(DetailsEvent.ShowError(resId))
                     }
                 )
 
@@ -95,7 +88,7 @@ internal class DetailsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleEmptyResult(){
+    private suspend fun handleEmptyResult() {
         _state.update { uiState -> uiState.copy(isLoading = false) }
         val resId = ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
         _event.emit(

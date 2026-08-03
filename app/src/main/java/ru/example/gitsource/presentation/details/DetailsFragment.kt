@@ -47,6 +47,7 @@ internal class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.onAction(DetailsAction.GetDetails)
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.event.collect { event ->
                 when (event) {
