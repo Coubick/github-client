@@ -47,8 +47,8 @@ internal class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.onAction(DetailsAction.GetDetails)
         viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.onAction(DetailsAction.GetDetails)
             viewModel.event.collect { event ->
                 when (event) {
                     is DetailsEvent.NavigateBack -> {

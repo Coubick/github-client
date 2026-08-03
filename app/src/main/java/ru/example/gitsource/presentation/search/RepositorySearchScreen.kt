@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
@@ -43,7 +41,6 @@ import ru.example.gitsource.presentation.ui.PictureDefaults.mediumCornerShapeSiz
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.lineHeight
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallFontSize
-import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallestFontSize
 import ru.example.gitsource.theme.GitSourceTheme
 
 @Composable
@@ -83,7 +80,7 @@ internal fun RepositorySearchScreen(
                                 .fillMaxWidth(),
                             textStyle = LocalTextStyle.current.copy(
                                 color = MaterialTheme.colorScheme.onBackground,
-                                fontSize = smallestFontSize,
+                                fontSize = smallFontSize,
                                 lineHeight = lineHeight),
                             label = {
                                 Text(
@@ -95,8 +92,12 @@ internal fun RepositorySearchScreen(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
                                 disabledIndicatorColor = Color.Transparent,
+                                focusedLabelColor = MaterialTheme.colorScheme.secondary,
+                                unfocusedLabelColor = MaterialTheme.colorScheme.onBackground.copy(
+                                    alpha = 0.6f
+                                ),
                             ),
-                            maxLines = 1,
+                            singleLine = true
                         )
                     }
                 )
@@ -151,7 +152,7 @@ internal fun RepositorySearchScreen(
                         strokeWidth = CircularProgressIndicatorDefaults.smallStroke
                     )
                 }
-            } else if (state.isFound.not() && state.searchRequestText.isEmpty().not()){
+            } else if (state.isFound.not()) {
                 Text(
                     modifier = Modifier
                         .padding(innerPadding),

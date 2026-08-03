@@ -23,11 +23,6 @@ internal class DetailsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private companion object {
-        const val REPOSITORY_OWNER_NAME_KEY = "repositoryOwnerName"
-        const val REPOSITORY_NAME_KEY = "repositoryName"
-    }
-
     private val _state = MutableStateFlow(
         DetailsUiState(
             isLoading = false,
