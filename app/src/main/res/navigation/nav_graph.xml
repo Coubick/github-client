@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/repositoryDetailsFragment"
-        android:name="ru.example.gitsource.presentation.details.RepositoryDetailsFragment"
+        android:name="ru.example.gitsource.presentation.details.DetailsFragment"
         android:label="RepositoryDetailsFragment">
 
         <argument

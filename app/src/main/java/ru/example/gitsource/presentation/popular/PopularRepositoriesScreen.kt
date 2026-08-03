@@ -50,7 +50,7 @@ import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
-import ru.example.gitsource.presentation.ui.PictureDefaults.smallImageSize
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.smallSpaceSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.largeFontSize
@@ -198,7 +198,7 @@ internal fun RepositoryCard(
             Icon(
                 painter = painterResource(R.drawable.baseline_person_24),
                 modifier = Modifier
-                    .size(smallImageSize)
+                    .size(mediumImageSize)
                     .clip(CircleShape)
                     .weight(0.5f),
                 contentDescription = stringResource(R.string.avatar),

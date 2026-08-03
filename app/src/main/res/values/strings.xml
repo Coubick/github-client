@@ -23,4 +23,13 @@
     <string name="confir">Да\n</string>
     <string name="confirm">Да</string>
     <string name="dismiss">Нет</string>
+    <string name="back_arrow_description">Иконка назад</string>
+    <string name="loading">Загрузка...</string>
+    <string name="owner_format_named">Владелец: %1$s</string>
+    <string name="amount_of_stars">Количество звёзд: %1$d</string>
+    <string name="language">Язык: %1$s</string>
+    <string name="no_description">Описания нет</string>
+    <string name="description">Описание: </string>
+    <string name="watchers_count">Количество наблюдателей: %1$s</string>
+    <string name="issues_count">Количество открытых issue: %1$s</string>
 </resources>
