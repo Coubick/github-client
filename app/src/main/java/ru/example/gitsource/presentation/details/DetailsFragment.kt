@@ -48,7 +48,6 @@ internal class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.onAction(DetailsAction.GetDetails)
             viewModel.event.collect { event ->
                 when (event) {
                     is DetailsEvent.NavigateBack -> {
@@ -66,5 +65,6 @@ internal class DetailsFragment : Fragment() {
                 }
             }
         }
+        viewModel.onAction(DetailsAction.GetDetails)
     }
 }

@@ -2,10 +2,16 @@
 
 package ru.example.gitsource.presentation.search
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,9 +32,18 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,15 +58,46 @@ import ru.example.gitsource.presentation.ui.TextFieldDefaults.mediumFontSize
 import ru.example.gitsource.presentation.ui.TextFieldDefaults.smallFontSize
 import ru.example.gitsource.theme.GitSourceTheme
 
+@SuppressLint("RememberReturnType")
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun RepositorySearchScreen(
     modifier: Modifier = Modifier,
     onAction: (RepositorySearchAction) -> Unit,
     state: RepositorySearchState
 ) {
-    var searchRequestText = state.searchRequestText
+    val focusManager = LocalFocusManager.current
+    val isKeyboardVisible = WindowInsets.isImeVisible
+    val focusRequester = remember { FocusRequester() }
+
+    var isFirstLaunch by remember { mutableStateOf(true) }
+
+    LaunchedEffect(
+        key1 = isKeyboardVisible,
+        key2 = state.searchRequestText
+    ) {
+        if (isFirstLaunch) {
+            if (isKeyboardVisible) {
+                isFirstLaunch = false
+            }
+            return@LaunchedEffect
+        }
+
+        if (isKeyboardVisible.not() && state.searchRequestText.isEmpty()) {
+            onAction(RepositorySearchAction.NavigateBack)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { focusManager.clearFocus() })
+            }
+            .imePadding(),
         topBar = {
             Column {
                 CenterAlignedTopAppBar(
@@ -60,7 +106,7 @@ internal fun RepositorySearchScreen(
                     ),
                     navigationIcon = {
                         IconButton(
-                            onClick = { onAction(RepositorySearchAction.NavigateBackClicked) }
+                            onClick = { onAction(RepositorySearchAction.NavigateBack) }
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.outline_arrow_back_ios_24),
@@ -71,20 +117,21 @@ internal fun RepositorySearchScreen(
                     },
                     title = {
                         TextField(
-                            value = searchRequestText,
+                            value = state.searchRequestText,
                             onValueChange = { enteredText ->
-                                searchRequestText = enteredText
                                 onAction(RepositorySearchAction.RepoNameEntered(enteredText))
                             },
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                             textStyle = LocalTextStyle.current.copy(
                                 color = MaterialTheme.colorScheme.onBackground,
                                 fontSize = smallFontSize,
-                                lineHeight = lineHeight),
+                                lineHeight = lineHeight,
+                            ),
                             label = {
                                 Text(
-                                    text = stringResource(R.string.enter_request)
+                                    text = stringResource(R.string.enter_request),
                                 )
                             },
                             shape = RoundedCornerShape(mediumCornerShapeSize),
@@ -97,7 +144,7 @@ internal fun RepositorySearchScreen(
                                     alpha = 0.6f
                                 ),
                             ),
-                            singleLine = true
+                            singleLine = true,
                         )
                     }
                 )
@@ -108,59 +155,72 @@ internal fun RepositorySearchScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (state.searchRequestText.isEmpty()) {
-                Text(
+            when {
+                state.searchRequestText.isEmpty() -> Text(
                     modifier = Modifier
                         .padding(innerPadding),
                     text = stringResource(R.string.search_repo_text),
                     color = MaterialTheme.colorScheme.onBackground,
                     fontSize = mediumFontSize,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
-            } else if (state.repositoriesList.isEmpty().not()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(innerPadding),
-                    state = rememberLazyListState(),
-                ) {
-                    items(
-                        items = state.repositoriesList,
-                        key = { it.id },
-                    ) { repository ->
-                        RepositoryCard(
-                            name = repository.name,
-                            starsCount = repository.starsCount,
-                            language = repository.language,
-                            onRepositoryCardClicked = {
-                                onAction(
-                                    RepositorySearchAction.RepositoryCardClicked(repository)
-                                )
-                            },
+
+                state.searchRequestText.isEmpty() ->
+                    Text(
+                        modifier = Modifier
+                            .padding(innerPadding),
+                        text = stringResource(R.string.search_repo_text),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = mediumFontSize,
+                        textAlign = TextAlign.Center,
+                    )
+
+                state.repositoriesList.isEmpty().not() ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(innerPadding),
+                        state = rememberLazyListState(),
+                    ) {
+                        items(
+                            items = state.repositoriesList,
+                            key = { it.id },
+                        ) { repository ->
+                            RepositoryCard(
+                                name = repository.name,
+                                starsCount = repository.starsCount,
+                                language = repository.language,
+                                onRepositoryCardClicked = {
+                                    onAction(
+                                        RepositorySearchAction.RepositoryCardClicked(repository)
+                                    )
+                                },
+                            )
+                        }
+                    }
+
+                state.isLoading ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(CircularProgressIndicatorDefaults.smallSize)
+                                .align(Alignment.Center),
+                            strokeWidth = CircularProgressIndicatorDefaults.smallStroke,
                         )
                     }
-                }
-            } else if (state.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
-                    CircularProgressIndicator(
+
+                state.isFound.not() ->
+                    Text(
                         modifier = Modifier
-                            .size(CircularProgressIndicatorDefaults.smallSize)
-                            .align(Alignment.Center),
-                        strokeWidth = CircularProgressIndicatorDefaults.smallStroke
+                            .padding(innerPadding),
+                        text = stringResource(R.string.repositories_not_found),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = mediumFontSize,
+                        textAlign = TextAlign.Center,
                     )
-                }
-            } else if (state.isFound.not()) {
-                Text(
-                    modifier = Modifier
-                        .padding(innerPadding),
-                    text = stringResource(R.string.repositories_not_found),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = mediumFontSize,
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }
@@ -184,10 +244,10 @@ fun PreviewSearchScreen() {
                             name = "OneTwoThree",
                             starsCount = 222,
                             language = "Pascal",
-                            authorName = "Enzo"
+                            authorName = "Enzo",
                         )
                     ),
-                    searchRequestText = ""
+                    searchRequestText = "",
                 )
             )
         }

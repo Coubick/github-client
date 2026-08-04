@@ -39,7 +39,7 @@ internal class DetailsViewModel @Inject constructor(
     fun onAction(action: DetailsAction) {
         when (action) {
             is DetailsAction.NavigateBackClicked -> {
-                viewModelScope.launch(Dispatchers.Default) {
+                viewModelScope.launch {
                     _event.emit(DetailsEvent.NavigateBack)
                 }
             }
