@@ -6,7 +6,7 @@ internal sealed interface RepositorySearchAction {
     data class RepositoryCardClicked(
         val repository: RepositoryCardEntity
     ) : RepositorySearchAction
-    data object NavigateBackClicked : RepositorySearchAction
+    data object NavigateBack : RepositorySearchAction
     data class RepoNameEntered(
         val repoName: String
     ) : RepositorySearchAction

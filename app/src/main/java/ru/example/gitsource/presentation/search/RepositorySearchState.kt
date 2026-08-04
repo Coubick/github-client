@@ -6,5 +6,5 @@ internal data class RepositorySearchState (
     val isLoading: Boolean,
     val isFound: Boolean,
     val repositoriesList: List<RepositoryCardEntity>,
-    var searchRequestText: String = "",
+    var searchRequestText: String,
 )
