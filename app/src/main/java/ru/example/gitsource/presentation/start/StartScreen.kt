@@ -19,8 +19,8 @@ internal fun StartScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.size(CircularProgressIndicatorDefaults.smallSize),
-            strokeWidth = CircularProgressIndicatorDefaults.smallStroke
+            modifier = Modifier.size(CircularProgressIndicatorDefaults.smallIndicatorSize),
+            strokeWidth = CircularProgressIndicatorDefaults.smallIndicatorStroke
         )
     }
 }

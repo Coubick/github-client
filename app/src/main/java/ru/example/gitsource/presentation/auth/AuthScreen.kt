@@ -78,8 +78,8 @@ internal fun AuthScreen(
         ) {
             if (state.isLoading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(CircularProgressIndicatorDefaults.smallSize),
-                    strokeWidth = CircularProgressIndicatorDefaults.smallStroke
+                    modifier = Modifier.size(CircularProgressIndicatorDefaults.smallIndicatorSize),
+                    strokeWidth = CircularProgressIndicatorDefaults.smallIndicatorStroke
                 )
             } else {
                 Text(

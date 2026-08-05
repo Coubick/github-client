@@ -93,6 +93,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.browser)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

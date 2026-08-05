@@ -38,9 +38,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.details.DetailsEntity
+import ru.example.gitsource.presentation.ImageRenderer
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
 import ru.example.gitsource.presentation.ui.PaddingDefaults.largePadding
 import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding
+import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
 import ru.example.gitsource.presentation.ui.PictureDefaults.smallImageSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.spaceSize
@@ -135,11 +137,11 @@ private fun RepositoryDetailsContent(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(R.drawable.baseline_person_24),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(smallImageSize)
+            ImageRenderer(
+                avatarUrl = details.avatarUrl,
+                imageSize = mediumImageSize,
+                fallbackResourceId = R.drawable.baseline_person_24,
+                errorResourceId = R.drawable.outline_error_24
             )
 
             Spacer(modifier = Modifier.width(mediumSpaceSize))
@@ -299,7 +301,8 @@ fun PreviewDetailsScreen() {
                         ownerName = "developer444",
                         description = "Описание пустого репозитория preview-repository с неизвестным владельцем на несколько строк",
                         watchersCount = 99,
-                        openIssuesCount = 10
+                        openIssuesCount = 10,
+                        avatarUrl = "",
                     ),
                 ),
                 onAction = {}

@@ -194,6 +194,7 @@ internal fun RepositorySearchScreen(
                                         RepositorySearchAction.RepositoryCardClicked(repository)
                                     )
                                 },
+                                avatarUrl = repository.avatarUrl,
                             )
                         }
                     }
@@ -206,9 +207,9 @@ internal fun RepositorySearchScreen(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier
-                                .size(CircularProgressIndicatorDefaults.smallSize)
+                                .size(CircularProgressIndicatorDefaults.smallIndicatorSize)
                                 .align(Alignment.Center),
-                            strokeWidth = CircularProgressIndicatorDefaults.smallStroke,
+                            strokeWidth = CircularProgressIndicatorDefaults.smallIndicatorStroke,
                         )
                     }
 
@@ -245,6 +246,7 @@ fun PreviewSearchScreen() {
                             starsCount = 222,
                             language = "Pascal",
                             authorName = "Enzo",
+                            avatarUrl = "https://avatars.githubusercontent.com/u/144241203?v=4",
                         )
                     ),
                     searchRequestText = "",

@@ -8,5 +8,6 @@ internal data class DetailsEntity (
     val ownerName: String,
     val description: String?,
     val watchersCount: Int,
-    val openIssuesCount: Int
+    val openIssuesCount: Int,
+    val avatarUrl: String
 )

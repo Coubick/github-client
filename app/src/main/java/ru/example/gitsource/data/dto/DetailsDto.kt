@@ -24,5 +24,6 @@ internal fun DetailsDto.toDetailsEntity(): DetailsEntity {
         description = description,
         watchersCount = watchersCount,
         openIssuesCount = openIssuesCount,
+        avatarUrl = owner.avatarUrl,
     )
 }
