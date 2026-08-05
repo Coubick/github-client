@@ -64,7 +64,7 @@ internal class AuthViewModel @Inject constructor(
     }
 
     private fun onGitHubAuthCode(code: String) {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch {
 
             val result = repository.login(code = code)
 

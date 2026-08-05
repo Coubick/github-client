@@ -15,10 +15,40 @@ internal class RepoRepositoryImpl @Inject constructor(
     private val networkClient: NetworkClient
 ) : RepoRepository {
 
+    private companion object {
+        const val QUERY = "stars:>0"
+    }
+
     override suspend fun getRepositories(): Result<List<RepositoryCardEntity>> {
         return withContext(Dispatchers.IO) {
             networkClient.execute {
-                githubApi.getRepositoriesList()
+                githubApi.getRepositoriesList(
+                    query = QUERY
+                )
+            }.fold(
+                onSuccess = { responseResult ->
+                    val repositoriesDtoList = responseResult.items
+                    if (repositoriesDtoList.isEmpty()) {
+                        Result.failure(NetworkError.EmptyResponseBody)
+                    } else {
+                        val repositoriesEntityList =
+                            repositoriesDtoList.map { repo -> repo.toRepositoryEntity() }
+                        Result.success(repositoriesEntityList)
+                    }
+                },
+                onFailure = { error ->
+                    Result.failure(error)
+                }
+            )
+        }
+    }
+
+    override suspend fun getRepositoriesByName(repositoryName: String): Result<List<RepositoryCardEntity>> {
+        return withContext(Dispatchers.IO) {
+            networkClient.execute {
+                githubApi.getRepositoriesList(
+                    query = repositoryName
+                )
             }.fold(
                 onSuccess = { responseResult ->
                     val repositoriesDtoList = responseResult.items

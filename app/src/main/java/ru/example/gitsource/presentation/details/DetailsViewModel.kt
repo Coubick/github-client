@@ -32,6 +32,7 @@ internal class DetailsViewModel @Inject constructor(
 
     private val _event = MutableSharedFlow<DetailsEvent>()
 
+
     val state = _state.asStateFlow()
     val event = _event.asSharedFlow()
 

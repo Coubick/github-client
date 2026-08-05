@@ -9,4 +9,5 @@ object TextFieldDefaults {
     val smallestFontSize = 10.sp
     val mediumStepFontSize = 5.sp
     val smallStepFontSize = 2.sp
+    val lineHeight = 12.sp
 }

@@ -33,6 +33,6 @@ internal object RepositoryDetailsParams {
     }
 
     fun getRepositoryOwnerName(savedStateHandle: SavedStateHandle) : String? {
-        return savedStateHandle.get<String>(REPOSITORY_NAME_KEY)
+        return savedStateHandle.get<String>(REPOSITORY_OWNER_NAME_KEY)
     }
 }
