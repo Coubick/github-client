@@ -28,9 +28,9 @@ import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults.sm
 
 @Composable
 fun ImageRenderer(
+    modifier: Modifier = Modifier,
     avatarUrl: String,
     imageSize: Dp,
-    modifier: Modifier = Modifier,
     fallbackResourceId: Int,
     errorResourceId: Int,
 ) {
@@ -56,6 +56,7 @@ fun ImageRenderer(
     }
 
     var isLoading by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .size(imageSize)
@@ -81,7 +82,7 @@ fun ImageRenderer(
             onError = {
                 isLoading = false
                 isError = true
-            }
+            },
         )
 
         if (isLoading) {
@@ -89,7 +90,7 @@ fun ImageRenderer(
                 modifier = Modifier
                     .size(imageSize)
                     .align(Alignment.Center),
-                strokeWidth = smallIndicatorStroke
+                strokeWidth = smallIndicatorStroke,
             )
         }
     }
