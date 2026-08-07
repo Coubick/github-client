@@ -6,4 +6,5 @@ internal data class RepositoryCardEntity (
     val starsCount: Int,
     val language: String?,
     val authorName: String,
+    val avatarUrl: String
 )

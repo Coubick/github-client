@@ -11,4 +11,6 @@ internal object NetworkConstants {
     const val HEADER_ACCEPT = "Accept"
     const val GITHUB_CLIENT_ID = BuildConfig.GITHUB_CLIENT_ID
     const val GITHUB_CLIENT_SECRET = BuildConfig.GITHUB_CLIENT_SECRET
+    const val RETRY_DELAY = 500L
+    const val MAX_RETRIES = 5
 }

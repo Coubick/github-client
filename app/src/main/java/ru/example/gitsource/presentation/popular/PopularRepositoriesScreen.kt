@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.AlertDialog
@@ -38,7 +37,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
+import ru.example.gitsource.presentation.ImageRenderer
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
@@ -63,9 +62,9 @@ import ru.example.gitsource.theme.GitSourceTheme
 
 @Composable
 internal fun PopularRepositoriesScreen(
-    modifier: Modifier = Modifier,
     onAction: (PopularRepositoriesAction) -> Unit,
-    state: PopularRepositoriesUiState
+    state: PopularRepositoriesUiState,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
@@ -137,6 +136,7 @@ internal fun PopularRepositoriesScreen(
                             PopularRepositoriesAction.RepositoryClicked(repository)
                         )
                     },
+                    avatarUrl = repository.avatarUrl
                 )
             }
         }
@@ -156,9 +156,9 @@ internal fun PopularRepositoriesScreen(
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
-                        .size(CircularProgressIndicatorDefaults.smallSize)
+                        .size(CircularProgressIndicatorDefaults.smallIndicatorSize)
                         .align(Alignment.Center),
-                    strokeWidth = CircularProgressIndicatorDefaults.smallStroke
+                    strokeWidth = CircularProgressIndicatorDefaults.smallIndicatorStroke
                 )
             }
         }
@@ -171,11 +171,12 @@ internal fun PopularRepositoriesScreen(
 
 @Composable
 internal fun RepositoryCard(
-    modifier: Modifier = Modifier,
     name: String,
     starsCount: Int,
     language: String?,
     onRepositoryCardClicked: () -> Unit,
+    avatarUrl: String,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -195,14 +196,12 @@ internal fun RepositoryCard(
                 .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                painter = painterResource(R.drawable.baseline_person_24),
-                modifier = Modifier
-                    .size(mediumImageSize)
-                    .clip(CircleShape)
-                    .weight(0.5f),
-                contentDescription = stringResource(R.string.avatar),
-                tint = MaterialTheme.colorScheme.tertiary
+            ImageRenderer(
+                modifier = Modifier.weight(0.5f),
+                avatarUrl = avatarUrl,
+                imageSize = mediumImageSize,
+                fallbackResourceId = R.drawable.baseline_person_24,
+                errorResourceId = R.drawable.outline_error_24
             )
 
             BasicText(
@@ -328,6 +327,7 @@ fun PreviewPopularRepoScreen() {
                             starsCount = 345,
                             language = "assembly",
                             authorName = "tourist",
+                            avatarUrl = ""
                         )
                     ),
                     isLoading = false,
@@ -350,6 +350,7 @@ fun PreviewRepositoryCard() {
                 starsCount = 68,
                 language = "C++",
                 onRepositoryCardClicked = {},
+                avatarUrl = "https://avatars.githubusercontent.com/u/144241203?v=4"
             )
         }
     }

@@ -10,11 +10,10 @@ internal class  JsonAcceptInterceptor @Inject constructor() : Interceptor {
         const val OAUTH_HEADER_VALUE = "application/json"
     }
 
-    override fun intercept(chain: Interceptor.Chain): Response? {
+    override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val header = originalRequest
-            .headers()
-            .get(HEADER_NAME)
+            .headers[HEADER_NAME]
 
         if (header == null){
             val newRequest = originalRequest

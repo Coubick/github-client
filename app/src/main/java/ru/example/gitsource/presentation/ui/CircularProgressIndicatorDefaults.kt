@@ -3,6 +3,6 @@ package ru.example.gitsource.presentation.ui
 import androidx.compose.ui.unit.dp
 
 internal object CircularProgressIndicatorDefaults {
-    val smallSize = 24.dp
-    val smallStroke = 2.dp
+    val smallIndicatorSize = 24.dp
+    val smallIndicatorStroke = 2.dp
 }
