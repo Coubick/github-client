@@ -35,8 +35,8 @@ import ru.example.gitsource.presentation.ui.SpaceDefaults
 @Composable
 internal fun AuthScreen(
     state: AuthUiState,
-    modifier: Modifier = Modifier,
     onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),

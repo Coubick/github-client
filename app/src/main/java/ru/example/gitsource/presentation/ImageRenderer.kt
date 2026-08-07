@@ -28,11 +28,11 @@ import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults.sm
 
 @Composable
 fun ImageRenderer(
-    modifier: Modifier = Modifier,
     avatarUrl: String,
     imageSize: Dp,
     fallbackResourceId: Int,
     errorResourceId: Int,
+    modifier: Modifier = Modifier,
 ) {
     var isError by remember { mutableStateOf(false) }
     var retryCount by remember { mutableIntStateOf(0) }

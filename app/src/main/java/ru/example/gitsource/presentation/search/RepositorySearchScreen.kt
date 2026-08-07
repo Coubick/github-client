@@ -62,9 +62,9 @@ import ru.example.gitsource.theme.GitSourceTheme
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun RepositorySearchScreen(
-    modifier: Modifier = Modifier,
     onAction: (RepositorySearchAction) -> Unit,
-    state: RepositorySearchState
+    state: RepositorySearchState,
+    modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
     val isKeyboardVisible = WindowInsets.isImeVisible

@@ -54,8 +54,8 @@ import ru.example.gitsource.theme.GitSourceTheme
 @Composable
 internal fun DetailsScreen(
     state: DetailsUiState,
+    onAction: (DetailsAction) -> Unit,
     modifier: Modifier = Modifier,
-    onAction: (DetailsAction) -> Unit
 ) {
     Scaffold(
         modifier = modifier,

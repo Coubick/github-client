@@ -62,9 +62,9 @@ import ru.example.gitsource.theme.GitSourceTheme
 
 @Composable
 internal fun PopularRepositoriesScreen(
-    modifier: Modifier = Modifier,
     onAction: (PopularRepositoriesAction) -> Unit,
-    state: PopularRepositoriesUiState
+    state: PopularRepositoriesUiState,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
@@ -171,12 +171,12 @@ internal fun PopularRepositoriesScreen(
 
 @Composable
 internal fun RepositoryCard(
-    modifier: Modifier = Modifier,
     name: String,
     starsCount: Int,
     language: String?,
     onRepositoryCardClicked: () -> Unit,
     avatarUrl: String,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         colors = CardDefaults.cardColors(
