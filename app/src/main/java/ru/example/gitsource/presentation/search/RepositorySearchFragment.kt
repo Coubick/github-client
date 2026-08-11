@@ -39,7 +39,8 @@ internal class RepositorySearchFragment : Fragment(){
                     val state by viewModel.state.collectAsStateWithLifecycle()
                     RepositorySearchScreen(
                         onAction = { action -> viewModel.onAction(action) },
-                        state = state
+                        onLoadNextPage = { viewModel.loadNextPage() },
+                        state = state,
                     )
                 }
             }

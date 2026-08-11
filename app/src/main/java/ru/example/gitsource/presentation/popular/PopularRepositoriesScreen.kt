@@ -2,6 +2,7 @@
 
 package ru.example.gitsource.presentation.popular
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -35,6 +37,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,12 +50,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.ImageRenderer
+import ru.example.gitsource.presentation.paging.Paginator
+import ru.example.gitsource.presentation.paging.PagingConstants.PAGINATION_THRESHOLD
+import ru.example.gitsource.presentation.paging.PagingState
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
+import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding
 import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.smallSpaceSize
@@ -63,9 +77,32 @@ import ru.example.gitsource.theme.GitSourceTheme
 @Composable
 internal fun PopularRepositoriesScreen(
     onAction: (PopularRepositoriesAction) -> Unit,
+    onLoadNextPage: () -> Unit,
     state: PopularRepositoriesUiState,
     modifier: Modifier = Modifier,
 ) {
+    val pagingState by state.paginator.state.collectAsState()
+    val listState = rememberLazyListState()
+
+    val shouldLoadNext = remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsCount = layoutInfo.totalItemsCount
+
+            if (totalItemsCount == 0) return@derivedStateOf false
+
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex > (totalItemsCount - PAGINATION_THRESHOLD)
+        }
+    }
+
+    LaunchedEffect(shouldLoadNext.value) {
+        if (shouldLoadNext.value && !pagingState.isLoading && !pagingState.endOfPaginationReached) {
+            onLoadNextPage()
+        }
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -121,10 +158,10 @@ internal fun PopularRepositoriesScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding),
-            state = rememberLazyListState(),
+            state = listState,
         ) {
             items(
-                items = state.repositoriesList,
+                items = pagingState.items,
                 key = { it.id },
             ) { repository ->
                 RepositoryCard(
@@ -139,6 +176,17 @@ internal fun PopularRepositoriesScreen(
                     avatarUrl = repository.avatarUrl
                 )
             }
+
+            if (pagingState.isLoading && pagingState.items.isNotEmpty()) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                            .padding(mediumPadding)
+                    )
+                }
+            }
         }
 
         if (state.isLogoutDialogVisible) {
@@ -148,7 +196,7 @@ internal fun PopularRepositoriesScreen(
             )
         }
 
-        if (state.isLoading){
+        if (pagingState.isLoading && pagingState.items.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -310,33 +358,52 @@ fun ConfirmExitDialog(
     )
 }
 
+@SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewPopularRepoScreen() {
+    val previewRepositories = listOf(
+        RepositoryCardEntity(
+            id = 1,
+            name = "simple-project-repo",
+            starsCount = 345,
+            language = "assembly",
+            authorName = "tourist",
+            avatarUrl = ""
+        )
+    )
+
+    val previewPagingState = MutableStateFlow(
+        PagingState(
+            items = previewRepositories,
+            isLoading = false,
+            error = null,
+            endOfPaginationReached = false
+        )
+    ).asStateFlow()
+
     GitSourceTheme(darkTheme = true) {
         Surface(
             color = MaterialTheme.colorScheme.background,
         ) {
             PopularRepositoriesScreen(
                 onAction = {},
+                onLoadNextPage = {},
                 state = PopularRepositoriesUiState(
-                    repositoriesList = listOf(
-                        RepositoryCardEntity(
-                            id = 1,
-                            name = "simple-project-repo",
-                            starsCount = 345,
-                            language = "assembly",
-                            authorName = "tourist",
-                            avatarUrl = ""
-                        )
-                    ),
-                    isLoading = false,
+                    paginator = object : Paginator<RepositoryCardEntity> {
+                        override val state: StateFlow<PagingState<RepositoryCardEntity>> =
+                            previewPagingState
+
+                        override fun loadNext() {}
+                        override fun restart() {}
+                    },
                     isLogoutDialogVisible = false
                 )
             )
         }
     }
 }
+
 
 @Composable
 @Preview(showBackground = true)

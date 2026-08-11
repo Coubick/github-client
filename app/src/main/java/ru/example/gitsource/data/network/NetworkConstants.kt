@@ -13,4 +13,5 @@ internal object NetworkConstants {
     const val GITHUB_CLIENT_SECRET = BuildConfig.GITHUB_CLIENT_SECRET
     const val RETRY_DELAY = 500L
     const val MAX_RETRIES = 5
+    const val PER_PAGE = 20
 }

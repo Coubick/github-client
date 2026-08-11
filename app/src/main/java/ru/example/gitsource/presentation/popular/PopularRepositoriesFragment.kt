@@ -37,6 +37,7 @@ internal class PopularRepositoriesFragment : Fragment() {
                     val state by viewModel.state.collectAsStateWithLifecycle()
                     PopularRepositoriesScreen(
                         onAction = { action -> viewModel.onAction(action) },
+                        onLoadNextPage = { viewModel.loadNextPage() },
                         state = state,
                     )
                 }
