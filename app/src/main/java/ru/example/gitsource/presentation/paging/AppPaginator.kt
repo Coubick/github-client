@@ -98,7 +98,7 @@ internal class AppPaginator<T> @Inject constructor(
 
     override fun loadNext() {
         if (_state.value.endOfPaginationReached || _state.value.isLoading) return
-        scope.launch(Dispatchers.Main.immediate) {
+        scope.launch {
             appPaginator.goNextPage()
         }
     }
