@@ -2,7 +2,6 @@
 
 package ru.example.gitsource.presentation.popular
 
-import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -81,7 +80,6 @@ internal fun PopularRepositoriesScreen(
     state: PopularRepositoriesUiState,
     modifier: Modifier = Modifier,
 ) {
-    val pagingState by state.paginator.state.collectAsState()
     val listState = rememberLazyListState()
 
     val shouldLoadNext = remember {
@@ -98,7 +96,8 @@ internal fun PopularRepositoriesScreen(
     }
 
     LaunchedEffect(shouldLoadNext.value) {
-        if (shouldLoadNext.value && !pagingState.isLoading && !pagingState.endOfPaginationReached) {
+        
+        if (shouldLoadNext.value && !state.isLoading && !state.endOfPaginationReached) {
             onLoadNextPage()
         }
     }
@@ -161,7 +160,7 @@ internal fun PopularRepositoriesScreen(
             state = listState,
         ) {
             items(
-                items = pagingState.items,
+                items = state.items,
                 key = { it.id },
             ) { repository ->
                 RepositoryCard(
@@ -177,7 +176,7 @@ internal fun PopularRepositoriesScreen(
                 )
             }
 
-            if (pagingState.isLoading && pagingState.items.isNotEmpty()) {
+            if (state.isLoading && state.items.isNotEmpty()) {
                 item {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -196,7 +195,7 @@ internal fun PopularRepositoriesScreen(
             )
         }
 
-        if (pagingState.isLoading && pagingState.items.isEmpty()) {
+        if (state.isLoading && state.items.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -358,7 +357,6 @@ fun ConfirmExitDialog(
     )
 }
 
-@SuppressLint("FlowOperatorInvokedInComposition")
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewPopularRepoScreen() {
@@ -373,15 +371,6 @@ fun PreviewPopularRepoScreen() {
         )
     )
 
-    val previewPagingState = MutableStateFlow(
-        PagingState(
-            items = previewRepositories,
-            isLoading = false,
-            error = null,
-            endOfPaginationReached = false
-        )
-    ).asStateFlow()
-
     GitSourceTheme(darkTheme = true) {
         Surface(
             color = MaterialTheme.colorScheme.background,
@@ -390,20 +379,16 @@ fun PreviewPopularRepoScreen() {
                 onAction = {},
                 onLoadNextPage = {},
                 state = PopularRepositoriesUiState(
-                    paginator = object : Paginator<RepositoryCardEntity> {
-                        override val state: StateFlow<PagingState<RepositoryCardEntity>> =
-                            previewPagingState
-
-                        override fun loadNext() {}
-                        override fun restart() {}
-                    },
-                    isLogoutDialogVisible = false
+                    isLogoutDialogVisible = false,
+                    items = previewRepositories,
+                    isLoading = false,
+                    error = null,
+                    endOfPaginationReached = false,
                 )
             )
         }
     }
 }
-
 
 @Composable
 @Preview(showBackground = true)

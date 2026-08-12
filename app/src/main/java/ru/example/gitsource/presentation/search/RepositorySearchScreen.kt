@@ -34,7 +34,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,13 +50,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.paging.Paginator
 import ru.example.gitsource.presentation.paging.PagingConstants.PAGINATION_THRESHOLD
-import ru.example.gitsource.presentation.paging.PagingState
 import ru.example.gitsource.presentation.popular.RepositoryCard
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding
@@ -82,7 +77,6 @@ internal fun RepositorySearchScreen(
 
     var isFirstLaunch by remember { mutableStateOf(true) }
 
-    val pagingState by state.paginator.state.collectAsState()
     val listState = rememberLazyListState()
 
     val shouldLoadNext = remember {
@@ -99,13 +93,12 @@ internal fun RepositorySearchScreen(
     }
 
     LaunchedEffect(shouldLoadNext.value) {
-        if (shouldLoadNext.value
-            && !pagingState.isLoading
-            && !pagingState.endOfPaginationReached
-            && pagingState.items.isNotEmpty()
-        ) {
-            onLoadNextPage()
-        }
+        val isPageLoadAvailable = shouldLoadNext.value
+                && state.isLoading.not()
+                && state.endOfPaginationReached.not()
+                && state.items.isNotEmpty()
+
+        if (isPageLoadAvailable) onLoadNextPage()
     }
 
     LaunchedEffect(
@@ -201,14 +194,14 @@ internal fun RepositorySearchScreen(
                     textAlign = TextAlign.Center,
                 )
 
-                pagingState.items.isEmpty().not() ->
+                state.items.isEmpty().not() ->
                     LazyColumn(
                         modifier = Modifier
                             .padding(innerPadding),
                         state = listState,
                     ) {
                         items(
-                            items = pagingState.items,
+                            items = state.items,
                             key = { it.id },
                         ) { repository ->
                             RepositoryCard(
@@ -224,7 +217,7 @@ internal fun RepositorySearchScreen(
                             )
                         }
 
-                        if (pagingState.isLoading && pagingState.items.isNotEmpty()) {
+                        if (state.isLoading && state.items.isNotEmpty()) {
                             item {
                                 CircularProgressIndicator(
                                     modifier = Modifier
@@ -264,7 +257,6 @@ internal fun RepositorySearchScreen(
     }
 }
 
-@SuppressLint("FlowOperatorInvokedInComposition")
 @Preview
 @Composable
 fun PreviewSearchScreen() {
@@ -279,15 +271,6 @@ fun PreviewSearchScreen() {
         )
     )
 
-    val previewPagingState = MutableStateFlow(
-        PagingState(
-            items = previewRepositories,
-            isLoading = false,
-            error = null,
-            endOfPaginationReached = false
-        )
-    ).asStateFlow()
-
     GitSourceTheme(darkTheme = true) {
         Surface(
             color = MaterialTheme.colorScheme.background,
@@ -297,13 +280,10 @@ fun PreviewSearchScreen() {
                 state = RepositorySearchState(
                     isLoading = false,
                     isFound = true,
-                    paginator = object : Paginator<RepositoryCardEntity> {
-                        override val state = previewPagingState
-                        override fun loadNext() {}
-                        override fun restart() {}
-
-                    },
                     searchRequestText = "",
+                    items = previewRepositories,
+                    error = null,
+                    endOfPaginationReached = false,
                 ),
                 onLoadNextPage = {},
             )

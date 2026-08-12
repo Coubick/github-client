@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
@@ -28,6 +31,7 @@ internal class RepositorySearchViewModel @Inject constructor(
 
     private companion object {
         const val DELAY = 300L
+        const val STOP_TIMEOUT_MILLIS = 5000L
     }
 
     private val _query = MutableStateFlow("")
@@ -43,18 +47,39 @@ internal class RepositorySearchViewModel @Inject constructor(
             )
         }
     )
-
-    private val _state = MutableStateFlow(
-        RepositorySearchState(
+    private val _screenForm = MutableStateFlow(
+        RepositorySearchScreenForm(
             isLoading = false,
             isFound = false,
-            paginator = paginator,
-            searchRequestText = "",
+            searchRequestText = ""
         )
     )
     private val _event = MutableSharedFlow<RepositorySearchEvent>()
 
-    val state = _state.asStateFlow()
+    val state: StateFlow<RepositorySearchState> = combine(
+        paginator.state,
+        _screenForm
+    ) { pagingState, form ->
+        RepositorySearchState(
+            isLoading = pagingState.isLoading,
+            isFound = form.isFound,
+            searchRequestText = form.searchRequestText,
+            items = pagingState.items,
+            error = pagingState.error,
+            endOfPaginationReached = pagingState.endOfPaginationReached
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+        initialValue = RepositorySearchState(
+            isLoading = false,
+            isFound = false,
+            searchRequestText = "",
+            items = emptyList(),
+            error = null,
+            endOfPaginationReached = false
+        )
+    )
     val event = _event.asSharedFlow()
 
     init {
@@ -78,8 +103,8 @@ internal class RepositorySearchViewModel @Inject constructor(
     }
 
     private fun onRepoNameEntered(repoName: String) {
-        _state.update { repositorySearchState ->
-            repositorySearchState.copy(
+        updateForm { repositorySearchForm ->
+            repositorySearchForm.copy(
                 isLoading = true,
                 searchRequestText = repoName,
             )
@@ -108,8 +133,8 @@ internal class RepositorySearchViewModel @Inject constructor(
         _query.debounce(DELAY)
             .distinctUntilChanged()
             .onEach {
-                _state.update { repositorySearchState ->
-                    repositorySearchState.copy(
+                updateForm { repositorySearchForm ->
+                    repositorySearchForm.copy(
                         isLoading = true,
                         isFound = false
                     )
@@ -122,8 +147,8 @@ internal class RepositorySearchViewModel @Inject constructor(
         viewModelScope.launch {
             paginator.state.collect { pagingState ->
 
-                _state.update { repositorySearchState ->
-                    repositorySearchState.copy(
+                updateForm { repositorySearchForm ->
+                    repositorySearchForm.copy(
                         isFound = !pagingState.isLoading && pagingState.items.isNotEmpty()
                     )
                 }
@@ -148,5 +173,9 @@ internal class RepositorySearchViewModel @Inject constructor(
 
     fun loadNextPage() {
         paginator.loadNext()
+    }
+
+    private fun updateForm(transform: (RepositorySearchScreenForm) -> RepositorySearchScreenForm) {
+        _screenForm.update(transform)
     }
 }

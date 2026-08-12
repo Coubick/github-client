@@ -1,9 +1,11 @@
 package ru.example.gitsource.presentation.popular
 
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.paging.Paginator
 
 internal data class PopularRepositoriesUiState (
-    val paginator: Paginator<RepositoryCardEntity>,
+    val items: List<RepositoryCardEntity>,
+    val isLoading: Boolean,
+    val error: Throwable?,
+    val endOfPaginationReached: Boolean,
     val isLogoutDialogVisible: Boolean,
 )

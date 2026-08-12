@@ -7,9 +7,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
@@ -26,6 +28,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     private val repoRepository: RepoRepository,
     private val authRepository: AuthRepository
 ) : ViewModel() {
+
+    private companion object {
+        const val STOP_TIMEOUT_MILLIS = 5000L
+    }
     private val _event = MutableSharedFlow<PopularRepositoriesEvent>()
     private val paginator: Paginator<RepositoryCardEntity> = AppPaginator(
         scope = viewModelScope,
@@ -33,18 +39,39 @@ internal class PopularRepositoriesViewModel @Inject constructor(
             repoRepository.getRepositories(page = page)
         }
     )
-    private val _state = MutableStateFlow(
+    private val _screenForm = MutableStateFlow(
+        PopularRepositoriesScreenForm(
+            isLoadingDialogVisible = false
+        )
+    )
+
+    val state: StateFlow<PopularRepositoriesUiState> = combine(
+        paginator.state,
+        _screenForm
+    ) { pagingState, form ->
         PopularRepositoriesUiState(
-            paginator = paginator,
+            items = pagingState.items,
+            isLoading = pagingState.isLoading,
+            error = pagingState.error,
+            endOfPaginationReached = pagingState.endOfPaginationReached,
+            isLogoutDialogVisible = form.isLoadingDialogVisible
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+        initialValue = PopularRepositoriesUiState(
+            items = emptyList(),
+            isLoading = false,
+            error = null,
+            endOfPaginationReached = false,
             isLogoutDialogVisible = false
         )
     )
 
-    val state: StateFlow<PopularRepositoriesUiState> = _state.asStateFlow()
     val event: SharedFlow<PopularRepositoriesEvent> = _event.asSharedFlow()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             paginator.state.collect { pagingState ->
                 if (pagingState.isLoading.not()) {
                     if (pagingState.error == null) {
@@ -83,9 +110,9 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun onLogoutClicked() {
-        _state.update { popularRepositoriesUiState ->
-            popularRepositoriesUiState.copy(
-                isLogoutDialogVisible = true
+        updateForm { popularRepositoriesScreenForm ->
+            popularRepositoriesScreenForm.copy(
+                isLoadingDialogVisible = true
             )
         }
     }
@@ -97,7 +124,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun onLogoutConfirmed() {
-        _state.update { it.copy(isLogoutDialogVisible = false) }
+        updateForm { popularRepositoriesScreenForm ->
+            popularRepositoriesScreenForm.copy(isLoadingDialogVisible = false)
+        }
+
         viewModelScope.launch(Dispatchers.Default) {
             val result = authRepository.logout()
             result.fold(
@@ -113,9 +143,13 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     }
 
     private fun onLogoutDismissed() {
-        _state.update { popularRepositoriesUiState ->
-            popularRepositoriesUiState.copy(isLogoutDialogVisible = false)
+        updateForm { popularRepositoriesScreenForm ->
+            popularRepositoriesScreenForm.copy(isLoadingDialogVisible = false)
         }
+    }
+
+    private fun updateForm(transform: (PopularRepositoriesScreenForm) -> PopularRepositoriesScreenForm) {
+        _screenForm.update(transform)
     }
 
     fun loadNextPage() {

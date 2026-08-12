@@ -7,5 +7,7 @@ internal data class RepositorySearchState (
     val isLoading: Boolean,
     val isFound: Boolean,
     var searchRequestText: String,
-    val paginator: Paginator<RepositoryCardEntity>
+    val items: List<RepositoryCardEntity>,
+    val error: Throwable?,
+    val endOfPaginationReached: Boolean,
 )
