@@ -71,23 +71,7 @@ internal class PopularRepositoriesViewModel @Inject constructor(
     val event: SharedFlow<PopularRepositoriesEvent> = _event.asSharedFlow()
 
     init {
-        viewModelScope.launch(Dispatchers.Default) {
-            paginator.state.collect { pagingState ->
-                if (pagingState.isLoading.not()) {
-                    if (pagingState.error == null) {
-                        if (pagingState.items.isEmpty()) {
-                            val resId =
-                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                        }
-                    } else {
-                        val resId = ErrorMapper.mapToStringMessage(NetworkError.LoadingError(pagingState.error))
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                    }
-                }
-            }
-        }
-
+        collectPagingState()
         loadNextPage()
     }
 
@@ -99,6 +83,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
             is PopularRepositoriesAction.LogoutConfirmed -> onLogoutConfirmed()
             is PopularRepositoriesAction.LogoutDialogDismissed -> onLogoutDismissed()
         }
+    }
+
+    fun loadNextPage() {
+        paginator.loadNext()
     }
 
     private fun onRepositoryClicked(repository: RepositoryCardEntity) {
@@ -152,7 +140,23 @@ internal class PopularRepositoriesViewModel @Inject constructor(
         _screenForm.update(transform)
     }
 
-    fun loadNextPage() {
-        paginator.loadNext()
+    private fun collectPagingState() {
+        viewModelScope.launch(Dispatchers.Default) {
+            paginator.state.collect { pagingState ->
+                if (pagingState.isLoading.not()) {
+                    if (pagingState.error == null) {
+                        if (pagingState.items.isEmpty()) {
+                            val resId =
+                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
+                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                        }
+                    } else {
+                        val resId =
+                            ErrorMapper.mapToStringMessage(NetworkError.LoadingError(pagingState.error))
+                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    }
+                }
+            }
+        }
     }
 }

@@ -36,11 +36,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,15 +44,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.ImageRenderer
-import ru.example.gitsource.presentation.paging.Paginator
-import ru.example.gitsource.presentation.paging.PagingConstants.PAGINATION_THRESHOLD
-import ru.example.gitsource.presentation.paging.PagingState
+import ru.example.gitsource.presentation.paging.PagingScrollEffect
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
@@ -82,25 +72,12 @@ internal fun PopularRepositoriesScreen(
 ) {
     val listState = rememberLazyListState()
 
-    val shouldLoadNext = remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItemsCount = layoutInfo.totalItemsCount
-
-            if (totalItemsCount == 0) return@derivedStateOf false
-
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
-
-            lastVisibleItemIndex > (totalItemsCount - PAGINATION_THRESHOLD)
-        }
-    }
-
-    LaunchedEffect(shouldLoadNext.value) {
-        
-        if (shouldLoadNext.value && !state.isLoading && !state.endOfPaginationReached) {
-            onLoadNextPage()
-        }
-    }
+    PagingScrollEffect(
+        listState = listState,
+        isLoading = state.isLoading,
+        endOfPaginationReached = state.endOfPaginationReached,
+        onLoadNextPage = onLoadNextPage,
+    )
 
     Scaffold(
         modifier = modifier,

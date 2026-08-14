@@ -34,7 +34,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +51,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.paging.PagingConstants.PAGINATION_THRESHOLD
+import ru.example.gitsource.presentation.paging.PagingScrollEffect
 import ru.example.gitsource.presentation.popular.RepositoryCard
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding
@@ -79,27 +78,12 @@ internal fun RepositorySearchScreen(
 
     val listState = rememberLazyListState()
 
-    val shouldLoadNext = remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItemsCount = layoutInfo.totalItemsCount
-
-            if (totalItemsCount == 0) return@derivedStateOf false
-
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
-
-            lastVisibleItemIndex > (totalItemsCount - PAGINATION_THRESHOLD)
-        }
-    }
-
-    LaunchedEffect(shouldLoadNext.value) {
-        val isPageLoadAvailable = shouldLoadNext.value
-                && state.isLoading.not()
-                && state.endOfPaginationReached.not()
-                && state.items.isNotEmpty()
-
-        if (isPageLoadAvailable) onLoadNextPage()
-    }
+    PagingScrollEffect(
+        listState = listState,
+        isLoading = state.isLoading,
+        endOfPaginationReached = state.endOfPaginationReached,
+        onLoadNextPage = onLoadNextPage,
+    )
 
     LaunchedEffect(
         key1 = isKeyboardVisible,
