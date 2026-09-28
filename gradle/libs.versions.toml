@@ -3,10 +3,10 @@ agp = "9.1.1"
 coreKtx = "1.19.0"
 lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
-kotlin = "2.2.20"
+kotlin = "2.4.0"
 composeBom = "2024.09.00"
-hilt = "2.59"
-ksp = "2.2.20-2.0.2"
+hilt = "2.60.1"
+ksp = "2.3.10"
 retrofit = "2.11.0"
 gson = "2.11.0"
 datastore = "1.2.1"
@@ -16,6 +16,7 @@ material = "1.12.0"
 browser = "1.10.0"
 foundation = "1.11.4"
 coil = "3.4.0"
+paginator = "10.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,8 @@ androidx-browser = { group = "androidx.browser", name = "browser", version.ref =
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+paginator-bom = { group = "io.github.jamal-wia", name = "paginator-bom", version.ref = "paginator" }
+paginator-offset = { group = "io.github.jamal-wia", name = "paginator-offset" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

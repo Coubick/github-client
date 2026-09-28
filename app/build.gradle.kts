@@ -95,6 +95,8 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+    implementation(platform(libs.paginator.bom))
+    implementation(libs.paginator.offset)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

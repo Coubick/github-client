@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -46,9 +47,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import ru.example.gitsource.R
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.ImageRenderer
+import ru.example.gitsource.presentation.paging.PagingScrollEffect
 import ru.example.gitsource.presentation.ui.CircularProgressIndicatorDefaults
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.cardHeight
 import ru.example.gitsource.presentation.ui.GraphicElementsDefaults.dividerThickness
+import ru.example.gitsource.presentation.ui.PaddingDefaults.mediumPadding
 import ru.example.gitsource.presentation.ui.PictureDefaults.mediumImageSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.mediumSpaceSize
 import ru.example.gitsource.presentation.ui.SpaceDefaults.smallSpaceSize
@@ -63,9 +66,19 @@ import ru.example.gitsource.theme.GitSourceTheme
 @Composable
 internal fun PopularRepositoriesScreen(
     onAction: (PopularRepositoriesAction) -> Unit,
+    onLoadNextPage: () -> Unit,
     state: PopularRepositoriesUiState,
     modifier: Modifier = Modifier,
 ) {
+    val listState = rememberLazyListState()
+
+    PagingScrollEffect(
+        listState = listState,
+        isLoading = state.isLoading,
+        endOfPaginationReached = state.endOfPaginationReached,
+        onLoadNextPage = onLoadNextPage,
+    )
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -121,10 +134,10 @@ internal fun PopularRepositoriesScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding),
-            state = rememberLazyListState(),
+            state = listState,
         ) {
             items(
-                items = state.repositoriesList,
+                items = state.items,
                 key = { it.id },
             ) { repository ->
                 RepositoryCard(
@@ -139,6 +152,17 @@ internal fun PopularRepositoriesScreen(
                     avatarUrl = repository.avatarUrl
                 )
             }
+
+            if (state.isLoading && state.items.isNotEmpty()) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                            .padding(mediumPadding)
+                    )
+                }
+            }
         }
 
         if (state.isLogoutDialogVisible) {
@@ -148,7 +172,7 @@ internal fun PopularRepositoriesScreen(
             )
         }
 
-        if (state.isLoading){
+        if (state.isLoading && state.items.isEmpty()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -313,25 +337,30 @@ fun ConfirmExitDialog(
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun PreviewPopularRepoScreen() {
+    val previewRepositories = listOf(
+        RepositoryCardEntity(
+            id = 1,
+            name = "simple-project-repo",
+            starsCount = 345,
+            language = "assembly",
+            authorName = "tourist",
+            avatarUrl = ""
+        )
+    )
+
     GitSourceTheme(darkTheme = true) {
         Surface(
             color = MaterialTheme.colorScheme.background,
         ) {
             PopularRepositoriesScreen(
                 onAction = {},
+                onLoadNextPage = {},
                 state = PopularRepositoriesUiState(
-                    repositoriesList = listOf(
-                        RepositoryCardEntity(
-                            id = 1,
-                            name = "simple-project-repo",
-                            starsCount = 345,
-                            language = "assembly",
-                            authorName = "tourist",
-                            avatarUrl = ""
-                        )
-                    ),
+                    isLogoutDialogVisible = false,
+                    items = previewRepositories,
                     isLoading = false,
-                    isLogoutDialogVisible = false
+                    error = null,
+                    endOfPaginationReached = false,
                 )
             )
         }

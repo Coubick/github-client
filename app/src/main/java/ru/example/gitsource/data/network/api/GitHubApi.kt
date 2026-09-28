@@ -9,12 +9,13 @@ import ru.example.gitsource.data.dto.DetailsDto
 import ru.example.gitsource.data.dto.RepositorySearchResponse
 import ru.example.gitsource.data.network.NetworkConstants.HEADER_ACCEPT
 import ru.example.gitsource.data.network.NetworkConstants.HEADER_ACCEPT_VALUE
+import ru.example.gitsource.data.network.NetworkConstants.PER_PAGE
 
 internal interface GitHubApi {
     private companion object {
         const val SORT_BY_PARAMETER = "stars"
         const val SORT_ORDER = "desc"
-        const val PER_PAGE = 20
+        const val PAGE = 1
     }
 
     @GET("search/repositories")
@@ -23,6 +24,7 @@ internal interface GitHubApi {
         @Query("q") query: String,
         @Query("sort") sort: String = SORT_BY_PARAMETER,
         @Query("order") order: String = SORT_ORDER,
+        @Query("page") page: Int = PAGE,
         @Query("per_page") perPage: Int = PER_PAGE
     ): Response<RepositorySearchResponse>
 

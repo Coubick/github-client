@@ -11,7 +11,7 @@
     <string name="error_bad_request">Некорректный запрос</string>
     <string name="error_empty_response">Пустой ответ от сервера</string>
     <string name="error_oauth">Ошибка авторизации: %1$s</string>
-    <string name="error_network">Ошибка сети</string>
+    <string name="error_network">Ошибка сети: %1$s</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="logo_description">"Логотип GitSource "</string>
     <string name="avatar">Аватар пользователя</string>
@@ -35,4 +35,5 @@
     <string name="search_repo_text">Чтобы найти репозиторий, начните печатать</string>
     <string name="repositories_not_found">Репозитории не найдены</string>
     <string name="enter_request">Введите запрос</string>
+    <string name="loading_error">Ошибка при загрузке: %1$s</string>
 </resources>

@@ -18,6 +18,7 @@ object ErrorMapper {
             is NetworkError.BadRequest -> R.string.error_bad_request
             is NetworkError.ServerError -> R.string.error_server
             is NetworkError.Unknown -> R.string.error_unknown
+            is NetworkError.LoadingError -> R.string.loading_error
         }
     }
 }

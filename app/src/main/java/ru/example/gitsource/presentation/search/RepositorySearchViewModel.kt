@@ -3,24 +3,25 @@ package ru.example.gitsource.presentation.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.popular.RepoRepository
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
 import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.paging.AppPaginator
+import ru.example.gitsource.presentation.paging.Paginator
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,21 +31,55 @@ internal class RepositorySearchViewModel @Inject constructor(
 
     private companion object {
         const val DELAY = 300L
+        const val STOP_TIMEOUT_MILLIS = 5000L
     }
 
     private val _query = MutableStateFlow("")
 
-    private val _state = MutableStateFlow(
-        RepositorySearchState(
+    private val paginator: Paginator<RepositoryCardEntity> = AppPaginator(
+        scope = viewModelScope,
+        loadPage = { page ->
+            val currentSearchQuery = _query.value
+
+            repoRepository.getRepositoriesByName(
+                page = page,
+                repositoryName = currentSearchQuery,
+            )
+        }
+    )
+    private val _screenForm = MutableStateFlow(
+        RepositorySearchScreenForm(
             isLoading = false,
             isFound = false,
-            repositoriesList = emptyList(),
-            searchRequestText = "",
+            searchRequestText = ""
         )
     )
     private val _event = MutableSharedFlow<RepositorySearchEvent>()
 
-    val state = _state.asStateFlow()
+    val state: StateFlow<RepositorySearchState> = combine(
+        paginator.state,
+        _screenForm
+    ) { pagingState, form ->
+        RepositorySearchState(
+            isLoading = pagingState.isLoading,
+            isFound = form.isFound,
+            searchRequestText = form.searchRequestText,
+            items = pagingState.items,
+            error = pagingState.error,
+            endOfPaginationReached = pagingState.endOfPaginationReached
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
+        initialValue = RepositorySearchState(
+            isLoading = false,
+            isFound = false,
+            searchRequestText = "",
+            items = emptyList(),
+            error = null,
+            endOfPaginationReached = false
+        )
+    )
     val event = _event.asSharedFlow()
 
     init {
@@ -68,11 +103,10 @@ internal class RepositorySearchViewModel @Inject constructor(
     }
 
     private fun onRepoNameEntered(repoName: String) {
-        _state.update { repositorySearchState ->
-            repositorySearchState.copy(
+        updateForm { repositorySearchForm ->
+            repositorySearchForm.copy(
                 isLoading = true,
                 searchRequestText = repoName,
-                repositoriesList = emptyList()
             )
         }
 
@@ -98,50 +132,50 @@ internal class RepositorySearchViewModel @Inject constructor(
     private fun onUpdateSearchResult() {
         _query.debounce(DELAY)
             .distinctUntilChanged()
-            .flatMapLatest { repoName ->
-                flow {
-                    if (repoName.isNotBlank()) {
-                        val result = repoRepository.getRepositoriesByName(repoName)
-                        emit(result)
+            .onEach {
+                updateForm { repositorySearchForm ->
+                    repositorySearchForm.copy(
+                        isLoading = true,
+                        isFound = false
+                    )
+                }
+
+                paginator.restart()
+            }
+            .launchIn(viewModelScope)
+
+        viewModelScope.launch {
+            paginator.state.collect { pagingState ->
+
+                updateForm { repositorySearchForm ->
+                    repositorySearchForm.copy(
+                        isFound = !pagingState.isLoading && pagingState.items.isNotEmpty()
+                    )
+                }
+
+                if (!pagingState.isLoading) {
+                    if (pagingState.error == null) {
+                        if (pagingState.items.isEmpty() && _query.value.isNotBlank()) {
+                            val resId =
+                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
+                            _event.emit(RepositorySearchEvent.ShowError(resId))
+                        }
+
+                    } else {
+                        val resId =
+                            ErrorMapper.mapToStringMessage(NetworkError.LoadingError(pagingState.error))
+                        _event.emit(RepositorySearchEvent.ShowError(resId))
                     }
                 }
             }
-            .flowOn(Dispatchers.Default)
-            .onEach { searchRepositoriesResult ->
-                searchRepositoriesResult.fold(
-                    onSuccess = {
-                        val entityRepositories = searchRepositoriesResult.getOrNull()
-                        if (entityRepositories != null) {
-                            _state.update { repositorySearchState ->
-                                repositorySearchState.copy(
-                                    repositoriesList = entityRepositories,
-                                    isLoading = false,
-                                    isFound = true
-                                )
-                            }
-                        } else {
-                            _state.update { repositorySearchState ->
-                                repositorySearchState.copy(
-                                    isLoading = false,
-                                    isFound = false
-                                )
-                            }
-                            val resId = ErrorMapper.mapToStringMessage(NetworkError.Unknown)
-                            _event.emit(RepositorySearchEvent.ShowError(resId))
-                        }
-                    },
-                    onFailure = { error ->
-                        _state.update { repositorySearchState ->
-                            repositorySearchState.copy(
-                                isLoading = false,
-                                isFound = false
-                            )
-                        }
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _event.emit(RepositorySearchEvent.ShowError(resId))
-                    }
-                )
-            }
-            .launchIn(viewModelScope)
+        }
+    }
+
+    fun loadNextPage() {
+        paginator.loadNext()
+    }
+
+    private fun updateForm(transform: (RepositorySearchScreenForm) -> RepositorySearchScreenForm) {
+        _screenForm.update(transform)
     }
 }

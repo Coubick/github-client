@@ -19,11 +19,12 @@ internal class RepoRepositoryImpl @Inject constructor(
         const val QUERY = "stars:>0"
     }
 
-    override suspend fun getRepositories(): Result<List<RepositoryCardEntity>> {
+    override suspend fun getRepositories(page: Int): Result<List<RepositoryCardEntity>> {
         return withContext(Dispatchers.IO) {
             networkClient.execute {
                 githubApi.getRepositoriesList(
-                    query = QUERY
+                    query = QUERY,
+                    page = page,
                 )
             }.fold(
                 onSuccess = { responseResult ->
@@ -43,11 +44,12 @@ internal class RepoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRepositoriesByName(repositoryName: String): Result<List<RepositoryCardEntity>> {
+    override suspend fun getRepositoriesByName(repositoryName: String, page: Int): Result<List<RepositoryCardEntity>> {
         return withContext(Dispatchers.IO) {
             networkClient.execute {
                 githubApi.getRepositoriesList(
-                    query = repositoryName
+                    query = repositoryName,
+                    page = page
                 )
             }.fold(
                 onSuccess = { responseResult ->

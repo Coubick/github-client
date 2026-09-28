@@ -10,4 +10,5 @@ sealed class NetworkError : Exception() {
     data object BadRequest : NetworkError()
     data object ServerError : NetworkError()
     data object Unknown : NetworkError()
+    data class LoadingError(override val cause: Throwable) : NetworkError()
 }
