@@ -12,7 +12,7 @@ internal sealed class NetworkErrorHandler(message: String) : Exception(message) 
                 401 -> NetworkError.Unauthorized
                 404 -> NetworkError.NotFound
                 in 500..599 -> NetworkError.ServerError
-                else -> NetworkError.Unknown
+                else -> NetworkError.Unknown(response.message())
             }
         }
     }

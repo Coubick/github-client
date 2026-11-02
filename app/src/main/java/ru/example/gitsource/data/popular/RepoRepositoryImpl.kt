@@ -45,6 +45,7 @@ internal class RepoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getRepositoriesByName(repositoryName: String, page: Int): Result<List<RepositoryCardEntity>> {
+        if (repositoryName.isBlank()) return Result.success(emptyList())
         return withContext(Dispatchers.IO) {
             networkClient.execute {
                 githubApi.getRepositoriesList(

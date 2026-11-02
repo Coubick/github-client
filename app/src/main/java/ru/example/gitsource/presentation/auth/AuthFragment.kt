@@ -41,8 +41,6 @@ internal class AuthFragment : Fragment() {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
 
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-
             setContent {
                 GitSourceTheme {
                     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -74,7 +72,7 @@ internal class AuthFragment : Fragment() {
                     is AuthEvent.ShowError -> {
                         Toast.makeText(
                             requireContext(),
-                            event.errorMessageResId,
+                            event.message.asString(requireContext()),
                             Toast.LENGTH_LONG
                         ).show()
                     }

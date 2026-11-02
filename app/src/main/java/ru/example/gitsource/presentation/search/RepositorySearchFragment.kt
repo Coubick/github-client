@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +35,8 @@ internal class RepositorySearchFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
             setContent {
                 GitSourceTheme {
                     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -71,9 +74,9 @@ internal class RepositorySearchFragment : Fragment(){
                     is RepositorySearchEvent.ShowError -> {
                         Toast.makeText(
                             requireContext(),
-                            event.error,
+                            event.message.asString(requireContext()),
                             Toast.LENGTH_LONG
-                        )
+                        ).show()
                     }
                 }
             }

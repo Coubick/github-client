@@ -23,7 +23,7 @@ internal class NetworkClient @Inject constructor(
             Result.success(body)
 
         } catch (e: Exception) {
-            Result.failure(NetworkError.Unknown)
+            Result.failure(NetworkError.Unknown(e.message))
         }
     }
 

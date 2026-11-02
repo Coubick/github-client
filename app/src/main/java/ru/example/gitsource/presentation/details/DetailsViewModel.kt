@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.details.DetailsRepository
-import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.ErrorMapper
 import ru.example.gitsource.presentation.navigation.RepositoryDetailsParams
 import javax.inject.Inject
 
@@ -78,8 +78,8 @@ internal class DetailsViewModel @Inject constructor(
 
                     onFailure = { error ->
                         _state.update { uiState -> uiState.copy(isLoading = false) }
-                        val resId = ErrorMapper.mapToStringMessage(error)
-                        _event.emit(DetailsEvent.ShowError(resId))
+                        val errorText = ErrorMapper.map(error)
+                        _event.emit(DetailsEvent.ShowError(errorText))
                     }
                 )
 
@@ -91,9 +91,9 @@ internal class DetailsViewModel @Inject constructor(
 
     private suspend fun handleEmptyResult() {
         _state.update { uiState -> uiState.copy(isLoading = false) }
-        val resId = ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
+        val errorText = ErrorMapper.map(NetworkError.EmptyResponseBody)
         _event.emit(
-            DetailsEvent.ShowError(resId)
+            DetailsEvent.ShowError(errorText)
         )
     }
 }

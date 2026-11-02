@@ -29,7 +29,7 @@ internal class AuthRepositoryImpl @Inject constructor(
                 onSuccess = { responseResult ->
                     val token = responseResult.accessToken
                     if (token.isEmpty()) {
-                        Result.failure(NetworkError.Unknown)
+                        Result.failure(NetworkError.EmptyToken)
                     } else {
                         tokenManager.saveToken(token)
                         Result.success(Unit)

@@ -97,6 +97,8 @@ dependencies {
     implementation(libs.coil.network)
     implementation(platform(libs.paginator.bom))
     implementation(libs.paginator.offset)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     ksp(libs.hilt.compiler)
     debugImplementation(libs.androidx.compose.ui.tooling)
 }

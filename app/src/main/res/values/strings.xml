@@ -7,7 +7,7 @@
 
     <string name="error_unauthorized">Неверный код авторизации</string>
     <string name="error_not_found">Ресурс не найден</string>
-    <string name="error_server">Ошибка сервера</string>
+    <string name="error_server">Ошибка сервера: %1$s</string>
     <string name="error_bad_request">Некорректный запрос</string>
     <string name="error_empty_response">Пустой ответ от сервера</string>
     <string name="error_oauth">Ошибка авторизации: %1$s</string>

@@ -9,6 +9,7 @@ sealed class NetworkError : Exception() {
     data object NotFound : NetworkError()
     data object BadRequest : NetworkError()
     data object ServerError : NetworkError()
-    data object Unknown : NetworkError()
+    data class Unknown(val info: String?) : NetworkError()
     data class LoadingError(override val cause: Throwable) : NetworkError()
+    data object EmptyToken : NetworkError()
 }

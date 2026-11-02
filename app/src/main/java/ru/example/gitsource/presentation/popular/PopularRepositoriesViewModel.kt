@@ -18,7 +18,7 @@ import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.auth.AuthRepository
 import ru.example.gitsource.domain.popular.RepoRepository
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.ErrorMapper
 import ru.example.gitsource.presentation.paging.AppPaginator
 import ru.example.gitsource.presentation.paging.Paginator
 import javax.inject.Inject
@@ -123,8 +123,8 @@ internal class PopularRepositoriesViewModel @Inject constructor(
                     _event.emit(PopularRepositoriesEvent.NavigateToAuth)
                 },
                 onFailure = { error ->
-                    val resId = ErrorMapper.mapToStringMessage(error)
-                    _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    val text = ErrorMapper.map(error)
+                    _event.emit(PopularRepositoriesEvent.ShowError(text))
                 }
             )
         }
@@ -144,16 +144,10 @@ internal class PopularRepositoriesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             paginator.state.collect { pagingState ->
                 if (pagingState.isLoading.not()) {
-                    if (pagingState.error == null) {
-                        if (pagingState.items.isEmpty()) {
-                            val resId =
-                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                            _event.emit(PopularRepositoriesEvent.ShowError(resId))
-                        }
-                    } else {
-                        val resId =
-                            ErrorMapper.mapToStringMessage(NetworkError.LoadingError(pagingState.error))
-                        _event.emit(PopularRepositoriesEvent.ShowError(resId))
+                    if (pagingState.error != null) {
+                        val errorText =
+                            ErrorMapper.map(NetworkError.LoadingError(pagingState.error))
+                        _event.emit(PopularRepositoriesEvent.ShowError(errorText))
                     }
                 }
             }

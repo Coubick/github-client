@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,6 +33,8 @@ internal class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+
             setContent {
                 GitSourceTheme {
                     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,9 +61,9 @@ internal class DetailsFragment : Fragment() {
                     is DetailsEvent.ShowError -> {
                         Toast.makeText(
                             requireContext(),
-                            event.errorMessageId,
+                            event.message.asString(requireContext()),
                             Toast.LENGTH_LONG
-                        )
+                        ).show()
                     }
                 }
             }

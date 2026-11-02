@@ -1,5 +1,6 @@
 package ru.example.gitsource.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
 import ru.example.gitsource.data.network.NetworkError
 import ru.example.gitsource.domain.popular.RepoRepository
 import ru.example.gitsource.domain.popular.RepositoryCardEntity
-import ru.example.gitsource.presentation.auth.ErrorMapper
+import ru.example.gitsource.presentation.ErrorMapper
 import ru.example.gitsource.presentation.paging.AppPaginator
 import ru.example.gitsource.presentation.paging.Paginator
 import javax.inject.Inject
@@ -156,15 +157,15 @@ internal class RepositorySearchViewModel @Inject constructor(
                 if (!pagingState.isLoading) {
                     if (pagingState.error == null) {
                         if (pagingState.items.isEmpty() && _query.value.isNotBlank()) {
-                            val resId =
-                                ErrorMapper.mapToStringMessage(NetworkError.EmptyResponseBody)
-                            _event.emit(RepositorySearchEvent.ShowError(resId))
+                            val errorText =
+                                ErrorMapper.map(NetworkError.EmptyResponseBody)
+                            _event.emit(RepositorySearchEvent.ShowError(errorText))
                         }
 
                     } else {
-                        val resId =
-                            ErrorMapper.mapToStringMessage(NetworkError.LoadingError(pagingState.error))
-                        _event.emit(RepositorySearchEvent.ShowError(resId))
+                        val errorText =
+                            ErrorMapper.map(NetworkError.LoadingError(pagingState.error))
+                        _event.emit(RepositorySearchEvent.ShowError(errorText))
                     }
                 }
             }
